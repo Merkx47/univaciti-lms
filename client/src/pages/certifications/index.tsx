@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { Home, Sun, Moon, ArrowLeft } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import logoUrl from "@assets/logo_1769031259580.png";
+import { MiniSkillLogo } from "@/components/tool-logo";
 
 const THEME_PRIMARY = "#1E9AD6";
 const THEME_LIGHT = "#3AAFE6";
@@ -219,7 +220,8 @@ export default function CertificationsPage() {
 
                 <div className="flex flex-wrap gap-1.5 mb-3">
                   {spec.skills.slice(0, 3).map((skill, i) => (
-                    <span key={i} className="text-xs px-2.5 py-1 rounded-full bg-white/30 text-white font-medium">
+                    <span key={i} className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-white/30 text-white font-medium">
+                      <MiniSkillLogo name={skill} size="sm" />
                       {skill}
                     </span>
                   ))}

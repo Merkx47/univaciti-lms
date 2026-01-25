@@ -556,26 +556,47 @@ function HeroSection() {
 
 function ThreePillarsSection() {
   const pillars = [
-    { icon: BookIcon, title: "Learning", description: "Hop on any of the specialization courses and learn on your own terms." },
-    { icon: CertificateIcon, title: "Certification", description: "Get certified to receive validation recruiters are looking for." },
-    { icon: BriefcaseIcon, title: "Recruitment", description: "Get access to the pool of certified professionals." },
+    { 
+      icon: BookIcon, 
+      title: "Learning", 
+      description: "Hop on any of the specialization courses and learn on your own terms.",
+      gradient: "from-blue-500 to-cyan-500",
+      bgColor: "bg-blue-50 dark:bg-blue-950/30"
+    },
+    { 
+      icon: CertificateIcon, 
+      title: "Certification", 
+      description: "Get certified to receive validation recruiters are looking for.",
+      gradient: "from-violet-500 to-purple-500",
+      bgColor: "bg-violet-50 dark:bg-violet-950/30"
+    },
+    { 
+      icon: BriefcaseIcon, 
+      title: "Recruitment", 
+      description: "Get access to the pool of certified professionals.",
+      gradient: "from-emerald-500 to-teal-500",
+      bgColor: "bg-emerald-50 dark:bg-emerald-950/30"
+    },
   ];
   
   return (
-    <section className="py-12 px-4 sm:px-6 lg:px-8 relative" data-testid="section-pillars">
+    <section className="py-16 px-4 sm:px-6 lg:px-8 relative bg-gradient-to-b from-background via-muted/30 to-background" data-testid="section-pillars">
       <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3 text-foreground">Your Path to Success</h2>
+          <p className="text-foreground/60 max-w-xl mx-auto">Three pillars that power your tech career transformation</p>
+        </div>
         <div className="grid sm:grid-cols-3 gap-8">
           {pillars.map((pillar, index) => (
-            <div key={index} className={`text-center fade-in-up stagger-${index + 1}`} data-testid={`card-pillar-${index}`}>
-              <div
-                className="w-24 h-24 rounded-2xl mx-auto mb-4 flex items-center justify-center glass-card hover-lift"
-              >
-                <span style={{ color: THEME_PRIMARY }}>
-                  <pillar.icon className="w-12 h-12" />
-                </span>
+            <div key={index} className={`text-center fade-in-up stagger-${index + 1} group`} data-testid={`card-pillar-${index}`}>
+              <div className={`relative w-28 h-28 rounded-3xl mx-auto mb-5 flex items-center justify-center ${pillar.bgColor} border border-border/50 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105`}>
+                <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${pillar.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${pillar.gradient} flex items-center justify-center shadow-lg`}>
+                  <pillar.icon className="w-7 h-7 text-white" />
+                </div>
               </div>
-              <h3 className="text-lg font-semibold mb-2 text-foreground" data-testid={`text-pillar-title-${index}`}>{pillar.title}</h3>
-              <p className="text-sm text-foreground/70 leading-relaxed" data-testid={`text-pillar-description-${index}`}>{pillar.description}</p>
+              <h3 className="text-xl font-bold mb-2 text-foreground" data-testid={`text-pillar-title-${index}`}>{pillar.title}</h3>
+              <p className="text-sm text-foreground/70 leading-relaxed max-w-xs mx-auto" data-testid={`text-pillar-description-${index}`}>{pillar.description}</p>
             </div>
           ))}
         </div>

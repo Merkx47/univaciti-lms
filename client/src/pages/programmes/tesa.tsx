@@ -15,6 +15,7 @@ import {
   StructureContent,
   BackButton
 } from "@/components/programme-shared";
+import { SkillsWithLogos } from "@/components/tool-logo";
 
 const cohorts = [
   { name: "January Cohort", startDate: "2026-01-15", endDate: "2026-03-10", color: "#1E9AD6" },
@@ -60,13 +61,7 @@ export default function TesaPage() {
             </div>
             <div>
               <h3 className="font-medium mb-3" style={{ color: THEME_PRIMARY }}>Key Skills You'll Learn</h3>
-              <div className="flex flex-wrap gap-2">
-                {currentSpec?.skills.map((skill, i) => (
-                  <span key={i} className="px-3 py-1.5 rounded-full text-sm text-white" style={{ backgroundColor: THEME_PRIMARY }}>
-                    {skill}
-                  </span>
-                ))}
-              </div>
+              <SkillsWithLogos skills={currentSpec?.skills || []} themeColor={THEME_PRIMARY} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700/30">
