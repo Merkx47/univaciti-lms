@@ -703,7 +703,7 @@ function Footer() {
     resources: [
       { name: "Community", href: "/community" },
       { name: "Blog", href: "/blog" },
-      { name: "FAQs", href: "/faqs" },
+      { name: "FAQs", href: "/faq" },
     ],
   };
 
