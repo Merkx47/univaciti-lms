@@ -59,23 +59,23 @@ function JourneyAnimationDivider({ className = "" }: { className?: string }) {
       <div className="max-w-4xl mx-auto px-4">
         {/* Journey Path */}
         <div className="relative flex items-center justify-between">
-          {/* Connecting Line - spans between circle centers only */}
+          {/* Connecting Line - from first circle center to last circle center */}
           <div 
             className="absolute top-1/2 h-1 bg-gray-200 dark:bg-slate-700 -translate-y-1/2"
-            style={{ left: 'calc(8% + 32px)', right: 'calc(8% + 32px)', zIndex: 0 }}
+            style={{ left: '32px', right: '32px', zIndex: 0 }}
           />
 
-          {/* Progress Line - same positioning */}
+          {/* Progress Line - starts at first circle center */}
           <motion.div
             className="absolute top-1/2 h-1 -translate-y-1/2"
             style={{ 
               backgroundColor: THEME_PRIMARY,
-              left: 'calc(8% + 32px)',
+              left: '32px',
               zIndex: 5,
             }}
             initial={{ width: 0 }}
             animate={{ 
-              width: `calc(${(activeStage / (stages.length - 1)) * 84}%)`
+              width: `calc(${(activeStage / (stages.length - 1)) * 100}% - ${(activeStage / (stages.length - 1)) * 64}px)`
             }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
           />
