@@ -7,7 +7,12 @@ import logoUrl from "@assets/logo_1769031259580.png";
 import {
   Sun,
   Moon,
+  BookOpen,
+  Sprout,
+  GraduationCap,
+  Star,
 } from "lucide-react";
+import { SiFacebook, SiLinkedin, SiInstagram } from "react-icons/si";
 import {
   Navbar as ResizableNavbar,
   NavBody,
@@ -23,13 +28,21 @@ import {
 const THEME_PRIMARY = "#1E9AD6";
 const THEME_LIGHT = "#3AAFE6";
 
+function XIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+    </svg>
+  );
+}
+
 // Journey Animation Divider - Shows progression from learner to expert
 function JourneyAnimationDivider({ className = "" }: { className?: string }) {
   const stages = [
-    { icon: "📚", label: "Learn", color: "#60a5fa" },
-    { icon: "🌱", label: "Grow", color: "#34d399" },
-    { icon: "🎓", label: "Graduate", color: "#a78bfa" },
-    { icon: "⭐", label: "Expert", color: "#fbbf24" },
+    { icon: BookOpen, label: "Learn", color: "#60a5fa", bgGradient: "from-blue-400 to-blue-600" },
+    { icon: Sprout, label: "Grow", color: "#34d399", bgGradient: "from-emerald-400 to-emerald-600" },
+    { icon: GraduationCap, label: "Graduate", color: "#a78bfa", bgGradient: "from-violet-400 to-violet-600" },
+    { icon: Star, label: "Expert", color: "#fbbf24", bgGradient: "from-amber-400 to-amber-600" },
   ];
 
   const [activeStage, setActiveStage] = useState(0);
@@ -59,44 +72,52 @@ function JourneyAnimationDivider({ className = "" }: { className?: string }) {
           />
 
           {/* Stage Icons */}
-          {stages.map((stage, index) => (
-            <motion.div
-              key={index}
-              className="relative z-20 flex flex-col items-center"
-              animate={{
-                scale: index === activeStage ? 1.2 : 1,
-              }}
-              transition={{ duration: 0.3 }}
-            >
+          {stages.map((stage, index) => {
+            const IconComponent = stage.icon;
+            return (
               <motion.div
-                className={`w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center text-2xl md:text-3xl border-4 transition-colors duration-300 ${
-                  index <= activeStage
-                    ? "bg-white dark:bg-slate-800 border-current"
-                    : "bg-gray-100 dark:bg-slate-700 border-gray-300 dark:border-slate-600"
-                }`}
-                style={{
-                  borderColor: index <= activeStage ? stage.color : undefined,
-                  boxShadow: index === activeStage ? `0 0 20px ${stage.color}40` : "none"
-                }}
+                key={index}
+                className="relative z-20 flex flex-col items-center"
                 animate={{
-                  y: index === activeStage ? -8 : 0,
+                  scale: index === activeStage ? 1.15 : 1,
                 }}
                 transition={{ duration: 0.3 }}
               >
-                {stage.icon}
+                <motion.div
+                  className={`w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center border-4 transition-all duration-300 shadow-lg ${
+                    index <= activeStage
+                      ? `bg-gradient-to-br ${stage.bgGradient}`
+                      : "bg-gray-100 dark:bg-slate-700 border-gray-300 dark:border-slate-600"
+                  }`}
+                  style={{
+                    borderColor: index <= activeStage ? stage.color : undefined,
+                    boxShadow: index === activeStage ? `0 0 30px ${stage.color}60, 0 4px 20px ${stage.color}40` : index <= activeStage ? `0 4px 15px ${stage.color}30` : "0 2px 10px rgba(0,0,0,0.1)"
+                  }}
+                  animate={{
+                    y: index === activeStage ? -10 : 0,
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <IconComponent 
+                    className={`w-7 h-7 md:w-9 md:h-9 ${
+                      index <= activeStage ? "text-white" : "text-gray-400 dark:text-slate-500"
+                    }`}
+                    strokeWidth={2.5}
+                  />
+                </motion.div>
+                <motion.span
+                  className={`mt-3 text-xs md:text-sm font-semibold transition-colors duration-300 ${
+                    index <= activeStage ? "text-foreground" : "text-foreground/40"
+                  }`}
+                  style={{
+                    color: index === activeStage ? stage.color : undefined
+                  }}
+                >
+                  {stage.label}
+                </motion.span>
               </motion.div>
-              <motion.span
-                className={`mt-2 text-xs md:text-sm font-medium transition-colors duration-300 ${
-                  index <= activeStage ? "text-foreground" : "text-foreground/40"
-                }`}
-                animate={{
-                  fontWeight: index === activeStage ? 700 : 500,
-                }}
-              >
-                {stage.label}
-              </motion.span>
-            </motion.div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Animated Person */}
@@ -726,6 +747,22 @@ function Footer() {
               ))}
             </ul>
           </div>
+        </div>
+
+        {/* Social Media */}
+        <div className="flex items-center justify-center gap-4 mb-8">
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-[#1877F2] transition-colors group">
+            <SiFacebook className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
+          </a>
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-[#0A66C2] transition-colors group">
+            <SiLinkedin className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
+          </a>
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-black transition-colors group">
+            <XIcon className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
+          </a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-gradient-to-br hover:from-purple-600 hover:via-pink-500 hover:to-orange-400 transition-colors group">
+            <SiInstagram className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
+          </a>
         </div>
 
         {/* Bottom Bar */}

@@ -38,6 +38,21 @@ const toolLogos: Record<string, string> = {
   "Docker": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",
   "Kubernetes": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-original.svg",
   "Confluence": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/confluence/confluence-original.svg",
+  "GCP": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg",
+  "REST APIs": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg",
+  "Microservices": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",
+  "CI/CD": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/githubactions/githubactions-original.svg",
+  "Test Planning": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jira/jira-original.svg",
+  "Automation": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/selenium/selenium-original.svg",
+  "Testing": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jest/jest-plain.svg",
+  "NLP": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
+  "Computer Vision": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/opencv/opencv-original.svg",
+  "Statistics": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/r/r-original.svg",
+  "System Design": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg",
+  "Security": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg",
+  "Scalability": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-original.svg",
+  "Cost Optimization": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg",
+  "Documentation": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/markdown/markdown-original.svg",
 };
 
 interface ToolLogoProps {
@@ -80,5 +95,72 @@ export function ToolsGrid({ tools }: ToolsGridProps) {
         <ToolLogo key={index} name={tool} />
       ))}
     </div>
+  );
+}
+
+interface SkillBadgeProps {
+  name: string;
+  themeColor?: string;
+}
+
+export function SkillBadge({ name, themeColor = "#1E9AD6" }: SkillBadgeProps) {
+  const logoUrl = toolLogos[name];
+  
+  return (
+    <div 
+      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm text-white"
+      style={{ backgroundColor: themeColor }}
+    >
+      {logoUrl && (
+        <img 
+          src={logoUrl} 
+          alt=""
+          className="w-4 h-4 object-contain brightness-0 invert"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+          }}
+        />
+      )}
+      <span>{name}</span>
+    </div>
+  );
+}
+
+interface SkillsWithLogosProps {
+  skills: string[];
+  themeColor?: string;
+}
+
+export function SkillsWithLogos({ skills, themeColor = "#1E9AD6" }: SkillsWithLogosProps) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {skills.map((skill, index) => (
+        <SkillBadge key={index} name={skill} themeColor={themeColor} />
+      ))}
+    </div>
+  );
+}
+
+interface MiniSkillLogoProps {
+  name: string;
+  size?: "sm" | "md";
+}
+
+export function MiniSkillLogo({ name, size = "sm" }: MiniSkillLogoProps) {
+  const logoUrl = toolLogos[name];
+  const sizeClass = size === "sm" ? "w-5 h-5" : "w-6 h-6";
+  
+  if (!logoUrl) return null;
+  
+  return (
+    <img 
+      src={logoUrl} 
+      alt={name}
+      title={name}
+      className={`${sizeClass} object-contain`}
+      onError={(e) => {
+        e.currentTarget.style.display = 'none';
+      }}
+    />
   );
 }
