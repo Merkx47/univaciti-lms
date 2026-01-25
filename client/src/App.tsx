@@ -33,6 +33,13 @@ import CommunityPage from "@/pages/community";
 import LoginPage from "@/pages/login";
 import RegisterPage from "@/pages/register";
 
+// Info pages
+import CareersPage from "@/pages/careers";
+import ContactPage from "@/pages/contact";
+import AboutPage from "@/pages/about";
+import FAQPage from "@/pages/faq";
+import BlogPage from "@/pages/blog";
+
 function Router() {
   return (
     <Switch>
@@ -62,6 +69,13 @@ function Router() {
       {/* Auth routes */}
       <Route path="/login" component={LoginPage}/>
       <Route path="/register" component={RegisterPage}/>
+      
+      {/* Info pages */}
+      <Route path="/careers" component={CareersPage}/>
+      <Route path="/contact" component={ContactPage}/>
+      <Route path="/about" component={AboutPage}/>
+      <Route path="/faq" component={FAQPage}/>
+      <Route path="/blog" component={BlogPage}/>
       
       <Route component={NotFound} />
     </Switch>
