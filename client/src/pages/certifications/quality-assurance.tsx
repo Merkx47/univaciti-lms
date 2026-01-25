@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { Sun, Moon, ArrowLeft, Clock, BookOpen, Target, Award } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
+import { ToolsGrid } from "@/components/tool-logo";
 import logoUrl from "@assets/logo_1769031259580.png";
 import worldMapImg from "@assets/world_map.png";
 const THEME_PRIMARY = "#1E9AD6";
@@ -186,17 +187,8 @@ export default function QualityAssurancePage() {
 
           {/* Tools Covered */}
           <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-border shadow-lg">
-            <h2 className="text-xl font-semibold mb-6">Tools Covered</h2>
-            <div className="flex flex-wrap gap-3">
-              {tools.map((tool, index) => (
-                <span
-                  key={index}
-                  className="px-4 py-2 rounded-full text-sm font-medium bg-muted/50 border border-border/50 hover:border-primary/30 transition-colors"
-                >
-                  {tool}
-                </span>
-              ))}
-            </div>
+            <h2 className="text-xl font-semibold mb-6">Tools & Platforms Covered</h2>
+            <ToolsGrid tools={tools} />
           </div>
 
           {/* CTA */}
