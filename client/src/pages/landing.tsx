@@ -398,12 +398,13 @@ function Navbar() {
           <div className="flex items-center gap-2">
             <ThemeToggle testId="button-theme-toggle" />
             <Link href="/register">
-              <NavbarButton variant="secondary" className="dark:text-foreground" data-testid="button-register">
+              <NavbarButton as="span" variant="secondary" className="dark:text-foreground" data-testid="button-register">
                 Register
               </NavbarButton>
             </Link>
             <Link href="/login">
               <NavbarButton
+                as="span"
                 variant="brand"
                 data-testid="button-sign-in"
               >
@@ -445,6 +446,7 @@ function Navbar() {
             <div className="flex w-full flex-col gap-3 pt-4">
               <Link href="/register" onClick={() => setIsMobileMenuOpen(false)}>
                 <NavbarButton
+                  as="span"
                   variant="secondary"
                   className="w-full dark:text-foreground border border-border"
                   data-testid="button-register-mobile"
@@ -454,6 +456,7 @@ function Navbar() {
               </Link>
               <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
                 <NavbarButton
+                  as="span"
                   variant="brand"
                   className="w-full"
                   data-testid="button-sign-in-mobile"
