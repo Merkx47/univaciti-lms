@@ -47,12 +47,14 @@ import AdminLoginPage from "@/pages/admin/login";
 import AdminDashboard from "@/pages/admin/dashboard";
 import AdminCourses from "@/pages/admin/courses";
 import AdminUsers from "@/pages/admin/users";
+import AdminEnrollments from "@/pages/admin/enrollments";
 import CurriculumBuilder from "@/pages/admin/curriculum";
 import LessonEditor from "@/pages/admin/lesson-editor";
 
 // Student dashboard
 import StudentDashboard from "@/pages/dashboard";
 import CoursePlayer from "@/pages/course-player";
+import QuizPage from "@/pages/quiz";
 
 function Router() {
   return (
@@ -98,11 +100,12 @@ function Router() {
       <AdminRoute path="/admin/courses/:id/curriculum" component={CurriculumBuilder}/>
       <AdminRoute path="/admin/lessons/:id/edit" component={LessonEditor}/>
       <AdminRoute path="/admin/users" component={AdminUsers}/>
-      <AdminRoute path="/admin/enrollments" component={AdminDashboard}/>
+      <AdminRoute path="/admin/enrollments" component={AdminEnrollments}/>
       
       {/* Student dashboard */}
       <ProtectedRoute path="/dashboard" component={StudentDashboard}/>
       <ProtectedRoute path="/course/:courseId/lesson/:lessonId" component={CoursePlayer}/>
+      <ProtectedRoute path="/quiz/:quizId" component={QuizPage}/>
       
       <Route component={NotFound} />
     </Switch>
