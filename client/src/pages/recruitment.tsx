@@ -100,7 +100,7 @@ export default function RecruitmentPage() {
             </div>
           </div>
           
-          <div className="p-6 rounded-xl border border-border glass-card glow-card shine-effect fade-in-up stagger-4">
+          <div className="p-6 rounded-xl border border-border glass-card shine-effect fade-in-up stagger-4">
             <h2 className="text-xl font-semibold mb-4">Register as a Recruiter</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>

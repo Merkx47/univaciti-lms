@@ -230,7 +230,7 @@ export default function CommunityPage() {
         <h2 className="text-xl font-semibold mb-4 gradient-text">Upcoming Events</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
           {upcomingEvents.map((event, index) => (
-            <div key={event.id} className={`p-4 rounded-lg border-2 border-gray-400 dark:border-slate-500 glass-card glow-card hover-lift cursor-pointer fade-in-up stagger-${(index % 6) + 1}`}>
+            <div key={event.id} className={`p-4 rounded-lg border-2 border-gray-400 dark:border-slate-500 glass-card hover-lift cursor-pointer fade-in-up stagger-${(index % 6) + 1}`}>
               <div className="flex items-start justify-between mb-2">
                 <span className="text-xs px-2 py-0.5 rounded-full text-white" style={{ backgroundColor: THEME_PRIMARY }}>
                   {event.type}

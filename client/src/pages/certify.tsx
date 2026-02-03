@@ -144,7 +144,7 @@ export default function CertifyPage() {
         <h2 className="text-xl font-semibold mb-4 gradient-text">Available Certification Exams</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {examTypes.map((exam, index) => (
-            <div key={index} className={`p-4 rounded-lg border-2 border-gray-400 dark:border-slate-500 glass-card glow-card hover-lift cursor-pointer fade-in-up stagger-${(index % 7) + 1}`}>
+            <div key={index} className={`p-4 rounded-lg border-2 border-gray-400 dark:border-slate-500 glass-card hover-lift cursor-pointer fade-in-up stagger-${(index % 7) + 1}`}>
               <h3 className="font-semibold text-sm mb-1">{exam.name}</h3>
               <p className="text-xs text-foreground/60 mb-2">{exam.description}</p>
               <div className="flex gap-4 text-xs text-foreground/50">
