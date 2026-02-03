@@ -55,6 +55,7 @@ import LessonEditor from "@/pages/admin/lesson-editor";
 import StudentDashboard from "@/pages/dashboard";
 import CoursePlayer from "@/pages/course-player";
 import QuizPage from "@/pages/quiz";
+import LeaderboardPage from "@/pages/leaderboard";
 
 function Router() {
   return (
@@ -106,6 +107,7 @@ function Router() {
       <ProtectedRoute path="/dashboard" component={StudentDashboard}/>
       <ProtectedRoute path="/course/:courseId/lesson/:lessonId" component={CoursePlayer}/>
       <ProtectedRoute path="/quiz/:quizId" component={QuizPage}/>
+      <ProtectedRoute path="/leaderboard" component={LeaderboardPage}/>
       
       <Route component={NotFound} />
     </Switch>

@@ -654,13 +654,37 @@ export async function registerRoutes(
             ));
 
           const progressPct = Math.round((completed.count / total.count) * 100);
+          const wasCompleted = progressPct === 100;
+          
           await db.update(enrollments)
             .set({ 
               progress: progressPct,
-              status: progressPct === 100 ? "completed" : "active",
-              completedAt: progressPct === 100 ? new Date() : null,
+              status: wasCompleted ? "completed" : "active",
+              completedAt: wasCompleted ? new Date() : null,
             })
             .where(and(eq(enrollments.userId, userId), eq(enrollments.courseId, module.courseId)));
+
+          // Update user stats
+          const [existingStats] = await db.select().from(userStats).where(eq(userStats.userId, userId));
+          const pointsEarned = 10; // Points per lesson
+          
+          if (existingStats) {
+            await db.update(userStats)
+              .set({
+                totalPoints: existingStats.totalPoints + pointsEarned,
+                lessonsCompleted: existingStats.lessonsCompleted + 1,
+                coursesCompleted: wasCompleted ? existingStats.coursesCompleted + 1 : existingStats.coursesCompleted,
+                updatedAt: new Date(),
+              })
+              .where(eq(userStats.userId, userId));
+          } else {
+            await db.insert(userStats).values({
+              userId,
+              totalPoints: pointsEarned,
+              lessonsCompleted: 1,
+              coursesCompleted: wasCompleted ? 1 : 0,
+            });
+          }
         }
       }
 
@@ -866,10 +890,17 @@ export async function registerRoutes(
 
   app.get("/api/leaderboard", async (req, res) => {
     try {
+      const { category = "points" } = req.query;
+      
+      let orderByColumn = userStats.totalPoints;
+      if (category === "courses") orderByColumn = userStats.coursesCompleted as any;
+      if (category === "streak") orderByColumn = userStats.currentStreak as any;
+      
       const result = await db.select({
         stats: userStats,
         user: {
           id: users.id,
+          username: users.username,
           firstName: users.firstName,
           lastName: users.lastName,
           avatar: users.avatar,
@@ -877,13 +908,65 @@ export async function registerRoutes(
       })
         .from(userStats)
         .innerJoin(users, eq(userStats.userId, users.id))
-        .orderBy(desc(userStats.totalPoints))
+        .orderBy(desc(orderByColumn))
         .limit(50);
       
-      res.json(result);
+      const formatted = result.map((r, index) => ({
+        rank: index + 1,
+        userId: r.user.id,
+        username: r.user.username,
+        firstName: r.user.firstName,
+        lastName: r.user.lastName,
+        avatarUrl: r.user.avatar,
+        totalPoints: r.stats.totalPoints,
+        coursesCompleted: r.stats.coursesCompleted,
+        currentStreak: r.stats.currentStreak,
+        badges: 0,
+      }));
+      
+      res.json(formatted);
     } catch (error) {
       console.error("Get leaderboard error:", error);
       res.status(500).json({ error: "Failed to get leaderboard" });
+    }
+  });
+
+  app.get("/api/leaderboard/me", requireAuth, async (req, res) => {
+    try {
+      const userId = (req.user as any).id;
+      const user = req.user as any;
+      
+      const allStats = await db.select({
+        stats: userStats,
+      })
+        .from(userStats)
+        .orderBy(desc(userStats.totalPoints));
+      
+      let [myStats] = await db.select().from(userStats).where(eq(userStats.userId, userId));
+      
+      if (!myStats) {
+        [myStats] = await db.insert(userStats).values({ userId }).returning();
+      }
+      
+      const rank = allStats.findIndex(s => s.stats.userId === userId) + 1;
+      
+      const [badgeCount] = await db.select({ count: count() }).from(userBadges).where(eq(userBadges.userId, userId));
+      
+      res.json({
+        rank: rank || allStats.length + 1,
+        userId,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatarUrl: user.avatar,
+        totalPoints: myStats.totalPoints,
+        coursesCompleted: myStats.coursesCompleted,
+        currentStreak: myStats.currentStreak,
+        badges: badgeCount.count,
+      });
+    } catch (error) {
+      console.error("Get my leaderboard rank error:", error);
+      res.status(500).json({ error: "Failed to get rank" });
     }
   });
 
