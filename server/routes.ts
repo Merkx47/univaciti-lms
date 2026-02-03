@@ -617,6 +617,9 @@ export async function registerRoutes(
         .where(and(eq(lessonProgress.userId, userId), eq(lessonProgress.lessonId, Number(lessonId))));
 
       let progress;
+      // Check if this lesson was already completed (for idempotent stats updates)
+      const wasAlreadyCompleted = existing?.status === "completed";
+      
       if (existing) {
         [progress] = await db.update(lessonProgress)
           .set({ status: "completed", progressPercent: 100, completedAt: new Date() })
@@ -656,6 +659,11 @@ export async function registerRoutes(
           const progressPct = Math.round((completed.count / total.count) * 100);
           const wasCompleted = progressPct === 100;
           
+          // Check if course was already completed before
+          const [enrollment] = await db.select().from(enrollments)
+            .where(and(eq(enrollments.userId, userId), eq(enrollments.courseId, module.courseId)));
+          const courseWasAlreadyCompleted = enrollment?.status === "completed";
+          
           await db.update(enrollments)
             .set({ 
               progress: progressPct,
@@ -664,26 +672,29 @@ export async function registerRoutes(
             })
             .where(and(eq(enrollments.userId, userId), eq(enrollments.courseId, module.courseId)));
 
-          // Update user stats
-          const [existingStats] = await db.select().from(userStats).where(eq(userStats.userId, userId));
-          const pointsEarned = 10; // Points per lesson
-          
-          if (existingStats) {
-            await db.update(userStats)
-              .set({
-                totalPoints: existingStats.totalPoints + pointsEarned,
-                lessonsCompleted: existingStats.lessonsCompleted + 1,
-                coursesCompleted: wasCompleted ? existingStats.coursesCompleted + 1 : existingStats.coursesCompleted,
-                updatedAt: new Date(),
-              })
-              .where(eq(userStats.userId, userId));
-          } else {
-            await db.insert(userStats).values({
-              userId,
-              totalPoints: pointsEarned,
-              lessonsCompleted: 1,
-              coursesCompleted: wasCompleted ? 1 : 0,
-            });
+          // Only update user stats if this is a new lesson completion (idempotent)
+          if (!wasAlreadyCompleted) {
+            const [existingStats] = await db.select().from(userStats).where(eq(userStats.userId, userId));
+            const pointsEarned = 10; // Points per lesson
+            const shouldIncrementCourses = wasCompleted && !courseWasAlreadyCompleted;
+            
+            if (existingStats) {
+              await db.update(userStats)
+                .set({
+                  totalPoints: existingStats.totalPoints + pointsEarned,
+                  lessonsCompleted: existingStats.lessonsCompleted + 1,
+                  coursesCompleted: shouldIncrementCourses ? existingStats.coursesCompleted + 1 : existingStats.coursesCompleted,
+                  updatedAt: new Date(),
+                })
+                .where(eq(userStats.userId, userId));
+            } else {
+              await db.insert(userStats).values({
+                userId,
+                totalPoints: pointsEarned,
+                lessonsCompleted: 1,
+                coursesCompleted: shouldIncrementCourses ? 1 : 0,
+              });
+            }
           }
         }
       }
