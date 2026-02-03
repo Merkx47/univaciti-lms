@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/use-auth";
-import { Lock, User, Shield, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Lock, User, Eye, EyeOff, Loader2 } from "lucide-react";
 import logoUrl from "@assets/logo_1769031259580.png";
 
 const THEME_PRIMARY = "#1E9AD6";
@@ -39,10 +39,7 @@ export default function AdminLoginPage() {
               <img src={logoUrl} alt="Univaciti" className="h-14 w-14 rounded-full" />
               <span className="text-3xl font-bold" style={{ color: THEME_PRIMARY }}>Univaciti</span>
             </div>
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Shield className="w-6 h-6" style={{ color: THEME_PRIMARY }} />
-              <h1 className="text-2xl font-bold">Admin Portal</h1>
-            </div>
+            <h1 className="text-2xl font-bold mb-2">Admin Portal</h1>
             <p className="text-muted-foreground">
               Sign in to access the Learning Management System
             </p>
