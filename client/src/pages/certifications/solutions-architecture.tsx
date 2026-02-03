@@ -23,7 +23,12 @@ function WorldMapWatermark() {
 function BlueprintIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-      <path d="M22 9V7h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2v-2h-2V9h2zm-4 10H4V5h14v14zM6 13h5v4H6zm6-6h4v3h-4zM6 7h5v5H6zm6 4h4v6h-4z"/>
+      <circle cx="12" cy="4" r="2.5"/>
+      <circle cx="4" cy="12" r="2.5"/>
+      <circle cx="20" cy="12" r="2.5"/>
+      <circle cx="12" cy="20" r="2.5"/>
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M12 6.5v2.5M12 15v2.5M6.5 12h2.5M15 12h2.5" stroke="currentColor" strokeWidth="1.5" fill="none"/>
     </svg>
   );
 }

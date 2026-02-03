@@ -59,24 +59,25 @@ function ReactLogoIcon({ className }: { className?: string }) {
   );
 }
 
-// Solutions Architecture - Blueprint/structure icon
+// Solutions Architecture - Network nodes diagram
 function ArchitectureIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-      <path d="M22 9V7h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2v-2h-2V9h2zm-4 10H4V5h14v14zM6 13h5v4H6zm6-6h4v3h-4zM6 7h5v5H6zm6 4h4v6h-4z"/>
+      <circle cx="12" cy="4" r="2.5"/>
+      <circle cx="4" cy="12" r="2.5"/>
+      <circle cx="20" cy="12" r="2.5"/>
+      <circle cx="12" cy="20" r="2.5"/>
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M12 6.5v2.5M12 15v2.5M6.5 12h2.5M15 12h2.5" stroke="currentColor" strokeWidth="1.5" fill="none"/>
     </svg>
   );
 }
 
-// AI & Machine Learning - Robot icon
+// AI & Machine Learning - Brain icon
 function RobotIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-      <path d="M12 2a1 1 0 011 1v2h3a3 3 0 013 3v2a1 1 0 01-2 0V8a1 1 0 00-1-1H8a1 1 0 00-1 1v2a1 1 0 01-2 0V8a3 3 0 013-3h3V3a1 1 0 011-1z"/>
-      <rect x="5" y="10" width="14" height="10" rx="2"/>
-      <circle cx="9" cy="14" r="1.5"/>
-      <circle cx="15" cy="14" r="1.5"/>
-      <path d="M9 18h6"/>
+      <path d="M12 2C9.5 2 7.5 3.5 7 5.5C5.5 5.5 4 7 4 9c0 1.5.5 2.5 1.5 3.5C5 13.5 4 15 4 17c0 2.5 2 4.5 4.5 4.5.5 0 1-.1 1.5-.2.5 1 1.5 1.7 2.5 1.7s2-.7 2.5-1.7c.5.1 1 .2 1.5.2 2.5 0 4.5-2 4.5-4.5 0-2-1-3.5-1.5-4.5 1-1 1.5-2 1.5-3.5 0-2-1.5-3.5-3-3.5-.5-2-2.5-3.5-5-3.5zm0 2c1.5 0 2.5 1 3 2h.5c1 0 1.5.5 1.5 1.5S16 9 15 9h-.5c-.5 1.5-1.5 2.5-2.5 2.5S10 10.5 9.5 9H9c-1 0-1.5-.5-1.5-1.5S8 6 9 6h.5c.5-1 1.5-2 2.5-2z"/>
     </svg>
   );
 }
