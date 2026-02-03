@@ -2,7 +2,7 @@ import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import {
-  BookOpen, Award, Flame, Clock, ChevronRight,
+  BookOpen, Award, Trophy, Flame, Clock, ChevronRight,
   Play, Bell, LogOut, User, Settings, Sun, Moon, BarChart3
 } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
