@@ -34,6 +34,7 @@ import CommunityPage from "@/pages/community";
 // Auth pages
 import LoginPage from "@/pages/login";
 import RegisterPage from "@/pages/register";
+import ForgotPasswordPage from "@/pages/forgot-password";
 
 // Info pages
 import CareersPage from "@/pages/careers";
@@ -89,6 +90,7 @@ function Router() {
       {/* Auth routes */}
       <Route path="/login" component={LoginPage}/>
       <Route path="/register" component={RegisterPage}/>
+      <Route path="/forgot-password" component={ForgotPasswordPage}/>
       
       {/* Info pages */}
       <Route path="/careers" component={CareersPage}/>
