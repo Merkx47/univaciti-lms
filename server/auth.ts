@@ -18,6 +18,11 @@ declare global {
 const scryptAsync = promisify(scrypt);
 const PostgresSessionStore = connectPg(session);
 
+function sanitizeUser(user: SelectUser) {
+  const { password, ...safeUser } = user;
+  return safeUser;
+}
+
 export async function hashPassword(password: string) {
   const salt = randomBytes(16).toString("hex");
   const buf = (await scryptAsync(password, salt, 64)) as Buffer;
@@ -133,7 +138,7 @@ export function setupAuth(app: Express) {
 
       req.login(user, (err) => {
         if (err) return next(err);
-        res.status(201).json(user);
+        res.status(201).json(sanitizeUser(user));
       });
     } catch (error) {
       next(error);
@@ -149,7 +154,7 @@ export function setupAuth(app: Express) {
       }
       req.login(user, (err) => {
         if (err) return next(err);
-        res.status(200).json(user);
+        res.status(200).json(sanitizeUser(user));
       });
     })(req, res, next);
   });
@@ -166,7 +171,7 @@ export function setupAuth(app: Express) {
       }
       req.login(user, (err) => {
         if (err) return next(err);
-        res.status(200).json(user);
+        res.status(200).json(sanitizeUser(user));
       });
     })(req, res, next);
   });
@@ -182,7 +187,7 @@ export function setupAuth(app: Express) {
   // Get current user
   app.get("/api/user", (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
-    res.json(req.user);
+    res.json(sanitizeUser(req.user as SelectUser));
   });
 }
 

@@ -7,7 +7,7 @@ import logoUrl from "@assets/logo_1769031259580.png";
 import worldMapImg from "@assets/world_map.png";
 import { Eye, EyeOff, Mail, Lock, GraduationCap, Users, Globe, Award, ChevronLeft, ChevronRight, Sun, Moon, ArrowLeft, Loader2 } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 
 const THEME_PRIMARY = "#1E9AD6";
@@ -109,36 +109,18 @@ export default function Login() {
   const [isAnimating, setIsAnimating] = useState(false);
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const { loginMutation, user } = useAuth();
   const isDark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
-  const loginMutation = useMutation({
-    mutationFn: async (data: { email: string; password: string }) => {
-      const res = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: data.email, password: data.password }),
-        credentials: "include",
-      });
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.error || "Login failed");
-      }
-      return res.json();
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
-      toast({ title: "Welcome back!", description: "Successfully signed in." });
-      if (data.user?.role === "admin" || data.user?.role === "instructor") {
+  useEffect(() => {
+    if (user) {
+      if (user.role === "admin" || user.role === "instructor") {
         navigate("/admin");
       } else {
         navigate("/dashboard");
       }
-    },
-    onError: (error: Error) => {
-      toast({ title: "Sign in failed", description: error.message, variant: "destructive" });
-    },
-  });
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -157,7 +139,7 @@ export default function Login() {
       toast({ title: "Please fill in all fields", variant: "destructive" });
       return;
     }
-    loginMutation.mutate({ email, password });
+    loginMutation.mutate({ username: email, password });
   };
 
   const goToSlide = (index: number) => {
