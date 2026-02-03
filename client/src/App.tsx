@@ -41,6 +41,8 @@ import ContactPage from "@/pages/contact";
 import AboutPage from "@/pages/about";
 import FAQPage from "@/pages/faq";
 import BlogPage from "@/pages/blog";
+import PrivacyPage from "@/pages/privacy";
+import TermsPage from "@/pages/terms";
 
 // Admin pages
 import AdminLoginPage from "@/pages/admin/login";
@@ -94,6 +96,8 @@ function Router() {
       <Route path="/about" component={AboutPage}/>
       <Route path="/faq" component={FAQPage}/>
       <Route path="/blog" component={BlogPage}/>
+      <Route path="/privacy" component={PrivacyPage}/>
+      <Route path="/terms" component={TermsPage}/>
       
       {/* Admin routes */}
       <Route path="/admin/login" component={AdminLoginPage}/>

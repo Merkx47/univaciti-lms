@@ -332,7 +332,7 @@ export default function CurriculumBuilder() {
                         }`}>
                           {lesson.isPublished ? "Live" : "Draft"}
                         </span>
-                        <Link href={`/admin/lesson/${lesson.id}`}>
+                        <Link href={`/admin/lessons/${lesson.id}/edit`}>
                           <Button variant="ghost" size="sm">Edit Content</Button>
                         </Link>
                         <Button variant="ghost" size="sm" className="text-red-600" onClick={() => handleDeleteLesson(module.id, lesson.id)}>
