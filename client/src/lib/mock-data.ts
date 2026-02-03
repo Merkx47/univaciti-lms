@@ -408,3 +408,31 @@ export const specializationInfo: Record<string, { name: string; color: string; i
   "solutions-architecture": { name: "Solutions Architecture", color: "#9B59B6", icon: "layers" },
   "ai-ml": { name: "AI & Machine Learning", color: "#FF6F00", icon: "brain" },
 };
+
+export const mockUsers = [
+  { id: 1, username: "admin", email: "admin@univaciti.com", firstName: "Admin", lastName: "User", role: "admin", isActive: true, createdAt: "2025-01-01T10:00:00Z" },
+  { id: 2, username: "instructor", email: "instructor@univaciti.com", firstName: "Sarah", lastName: "Johnson", role: "instructor", isActive: true, createdAt: "2025-01-02T10:00:00Z" },
+  { id: 3, username: "chukwuemeka.okonkwo", email: "chukwuemeka@gmail.com", firstName: "Chukwuemeka", lastName: "Okonkwo", role: "student", isActive: true, createdAt: "2025-01-15T10:00:00Z" },
+  { id: 4, username: "ngozi.adeyemi", email: "ngozi.adeyemi@yahoo.com", firstName: "Ngozi", lastName: "Adeyemi", role: "student", isActive: true, createdAt: "2025-01-16T10:00:00Z" },
+  { id: 5, username: "oluwaseun.bakare", email: "seun.bakare@outlook.com", firstName: "Oluwaseun", lastName: "Bakare", role: "student", isActive: true, createdAt: "2025-01-17T10:00:00Z" },
+  { id: 6, username: "amina.yusuf", email: "amina.yusuf@gmail.com", firstName: "Amina", lastName: "Yusuf", role: "student", isActive: true, createdAt: "2025-01-18T10:00:00Z" },
+  { id: 7, username: "tunde.olatunji", email: "tunde.olatunji@gmail.com", firstName: "Tunde", lastName: "Olatunji", role: "student", isActive: true, createdAt: "2025-01-19T10:00:00Z" },
+  { id: 8, username: "blessing.eze", email: "blessing.eze@yahoo.com", firstName: "Blessing", lastName: "Eze", role: "student", isActive: true, createdAt: "2025-01-20T10:00:00Z" },
+  { id: 9, username: "ibrahim.musa", email: "ibrahim.musa@gmail.com", firstName: "Ibrahim", lastName: "Musa", role: "student", isActive: true, createdAt: "2025-01-21T10:00:00Z" },
+  { id: 10, username: "folake.adeniyi", email: "folake.adeniyi@outlook.com", firstName: "Folake", lastName: "Adeniyi", role: "student", isActive: true, createdAt: "2025-01-22T10:00:00Z" },
+  { id: 11, username: "emeka.nwachukwu", email: "emeka.nwachukwu@gmail.com", firstName: "Emeka", lastName: "Nwachukwu", role: "student", isActive: false, createdAt: "2025-01-23T10:00:00Z" },
+  { id: 12, username: "aisha.abdullahi", email: "aisha.abdullahi@yahoo.com", firstName: "Aisha", lastName: "Abdullahi", role: "student", isActive: true, createdAt: "2025-01-24T10:00:00Z" },
+];
+
+export const mockAdminEnrollments = [
+  { id: 1, userId: 3, courseId: 1, user: mockUsers[2], course: mockCourses[0], status: "active", progress: 65, enrolledAt: "2025-01-20T10:00:00Z" },
+  { id: 2, userId: 4, courseId: 2, user: mockUsers[3], course: mockCourses[1], status: "completed", progress: 100, enrolledAt: "2025-01-21T10:00:00Z" },
+  { id: 3, userId: 5, courseId: 3, user: mockUsers[4], course: mockCourses[2], status: "active", progress: 45, enrolledAt: "2025-01-22T10:00:00Z" },
+  { id: 4, userId: 6, courseId: 1, user: mockUsers[5], course: mockCourses[0], status: "active", progress: 80, enrolledAt: "2025-01-23T10:00:00Z" },
+  { id: 5, userId: 7, courseId: 4, user: mockUsers[6], course: mockCourses[3], status: "pending", progress: 0, enrolledAt: "2025-01-24T10:00:00Z" },
+  { id: 6, userId: 8, courseId: 2, user: mockUsers[7], course: mockCourses[1], status: "active", progress: 30, enrolledAt: "2025-01-25T10:00:00Z" },
+  { id: 7, userId: 9, courseId: 5, user: mockUsers[8], course: mockCourses[4], status: "completed", progress: 100, enrolledAt: "2025-01-26T10:00:00Z" },
+  { id: 8, userId: 10, courseId: 1, user: mockUsers[9], course: mockCourses[0], status: "active", progress: 55, enrolledAt: "2025-01-27T10:00:00Z" },
+  { id: 9, userId: 3, courseId: 6, user: mockUsers[2], course: mockCourses[5], status: "active", progress: 20, enrolledAt: "2025-01-28T10:00:00Z" },
+  { id: 10, userId: 4, courseId: 7, user: mockUsers[3], course: mockCourses[6], status: "expired", progress: 15, enrolledAt: "2025-01-10T10:00:00Z" },
+];
