@@ -1,17 +1,14 @@
 import { useState, useEffect } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Link, useParams, useLocation } from "wouter";
+import { Link, useParams } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/hooks/use-auth";
-import { apiRequest, queryClient } from "@/lib/queryClient";
 import {
   ArrowLeft, Plus, GripVertical, Edit, Trash2, ChevronDown, ChevronRight,
   Video, FileText, Code, HelpCircle, Save, Eye, BookOpen, Settings,
-  Loader2, CheckCircle, Play
+  CheckCircle
 } from "lucide-react";
-import { useTheme } from "@/components/theme-provider";
 import logoUrl from "@assets/logo_1769031259580.png";
+import { mockCourses } from "@/lib/mock-data";
 
 const THEME_PRIMARY = "#1E9AD6";
 
@@ -31,6 +28,16 @@ const lessonTypeColors: Record<string, string> = {
   assignment: "#F59E0B",
 };
 
+interface Lesson {
+  id: number;
+  moduleId: number;
+  title: string;
+  type: string;
+  order: number;
+  isPublished: boolean;
+  estimatedMinutes: number;
+}
+
 interface Module {
   id: number;
   courseId: number;
@@ -41,91 +48,78 @@ interface Module {
   lessons: Lesson[];
 }
 
-interface Lesson {
-  id: number;
-  moduleId: number;
-  title: string;
-  slug: string;
-  type: string;
-  order: number;
-  isPublished: boolean;
-  estimatedMinutes: number;
-}
+// Generate initial mock modules for a course
+const generateInitialModules = (courseId: number): Module[] => {
+  const course = mockCourses.find(c => c.id === courseId);
+  if (!course) return [];
+  
+  return [
+    {
+      id: 1,
+      courseId,
+      title: "Getting Started",
+      description: "Introduction to the course",
+      order: 1,
+      isPublished: true,
+      lessons: [
+        { id: 1, moduleId: 1, title: "Welcome & Course Overview", type: "video", order: 1, isPublished: true, estimatedMinutes: 10 },
+        { id: 2, moduleId: 1, title: "Setting Up Your Environment", type: "text", order: 2, isPublished: true, estimatedMinutes: 15 },
+        { id: 3, moduleId: 1, title: "First Hands-On Exercise", type: "code", order: 3, isPublished: true, estimatedMinutes: 20 },
+      ]
+    },
+    {
+      id: 2,
+      courseId,
+      title: "Core Fundamentals",
+      description: "Essential concepts and techniques",
+      order: 2,
+      isPublished: true,
+      lessons: [
+        { id: 4, moduleId: 2, title: "Understanding Key Concepts", type: "text", order: 1, isPublished: true, estimatedMinutes: 20 },
+        { id: 5, moduleId: 2, title: "Practical Application Demo", type: "video", order: 2, isPublished: true, estimatedMinutes: 25 },
+        { id: 6, moduleId: 2, title: "Knowledge Check Quiz", type: "quiz", order: 3, isPublished: true, estimatedMinutes: 15 },
+      ]
+    },
+    {
+      id: 3,
+      courseId,
+      title: "Advanced Techniques",
+      description: "Deep dive into advanced topics",
+      order: 3,
+      isPublished: false,
+      lessons: [
+        { id: 7, moduleId: 3, title: "Advanced Patterns & Best Practices", type: "text", order: 1, isPublished: false, estimatedMinutes: 30 },
+        { id: 8, moduleId: 3, title: "Real-World Case Study", type: "video", order: 2, isPublished: false, estimatedMinutes: 35 },
+      ]
+    },
+  ];
+};
 
 export default function CurriculumBuilder() {
   const { id } = useParams<{ id: string }>();
-  const [, setLocation] = useLocation();
-  const { user } = useAuth();
+  const courseId = Number(id);
+  const course = mockCourses.find(c => c.id === courseId);
+  
+  const [modules, setModules] = useState<Module[]>([]);
   const [expandedModules, setExpandedModules] = useState<Set<number>>(new Set());
   const [editingModule, setEditingModule] = useState<number | null>(null);
-  const [editingLesson, setEditingLesson] = useState<number | null>(null);
+  const [editingModuleTitle, setEditingModuleTitle] = useState("");
   const [newModuleTitle, setNewModuleTitle] = useState("");
   const [newLessonTitle, setNewLessonTitle] = useState("");
   const [newLessonType, setNewLessonType] = useState("text");
   const [addingLessonToModule, setAddingLessonToModule] = useState<number | null>(null);
+  const [nextModuleId, setNextModuleId] = useState(100);
+  const [nextLessonId, setNextLessonId] = useState(100);
+  const [saveMessage, setSaveMessage] = useState("");
 
-  const { data: course, isLoading } = useQuery<any>({
-    queryKey: [`/api/courses/${id}`],
-    enabled: !!id,
-  });
-
-  const createModuleMutation = useMutation({
-    mutationFn: async (title: string) => {
-      const res = await apiRequest("POST", `/api/admin/courses/${id}/modules`, {
-        title,
-        description: "",
-      });
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/courses/${id}`] });
-      setNewModuleTitle("");
-    },
-  });
-
-  const updateModuleMutation = useMutation({
-    mutationFn: async ({ moduleId, data }: { moduleId: number; data: any }) => {
-      const res = await apiRequest("PATCH", `/api/admin/modules/${moduleId}`, data);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/courses/${id}`] });
-      setEditingModule(null);
-    },
-  });
-
-  const deleteModuleMutation = useMutation({
-    mutationFn: async (moduleId: number) => {
-      await apiRequest("DELETE", `/api/admin/modules/${moduleId}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/courses/${id}`] });
-    },
-  });
-
-  const createLessonMutation = useMutation({
-    mutationFn: async ({ moduleId, title, type }: { moduleId: number; title: string; type: string }) => {
-      const res = await apiRequest("POST", `/api/admin/modules/${moduleId}/lessons`, {
-        title,
-        type,
-      });
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/courses/${id}`] });
-      setNewLessonTitle("");
-      setAddingLessonToModule(null);
-    },
-  });
-
-  const deleteLessonMutation = useMutation({
-    mutationFn: async (lessonId: number) => {
-      await apiRequest("DELETE", `/api/admin/lessons/${lessonId}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/courses/${id}`] });
-    },
-  });
+  // Initialize modules
+  useEffect(() => {
+    if (courseId) {
+      const initialModules = generateInitialModules(courseId);
+      setModules(initialModules);
+      setExpandedModules(new Set(initialModules.map(m => m.id)));
+    }
+  }, [courseId]);
 
   const toggleModule = (moduleId: number) => {
     const newExpanded = new Set(expandedModules);
@@ -137,22 +131,104 @@ export default function CurriculumBuilder() {
     setExpandedModules(newExpanded);
   };
 
-  // Expand all modules by default
-  useEffect(() => {
-    if (course?.modules) {
-      setExpandedModules(new Set(course.modules.map((m: Module) => m.id)));
-    }
-  }, [course?.modules]);
+  const addModule = () => {
+    if (!newModuleTitle.trim()) return;
+    
+    const newModule: Module = {
+      id: nextModuleId,
+      courseId,
+      title: newModuleTitle,
+      description: "",
+      order: modules.length + 1,
+      isPublished: false,
+      lessons: [],
+    };
+    
+    setModules([...modules, newModule]);
+    setExpandedModules(new Set([...Array.from(expandedModules), nextModuleId]));
+    setNextModuleId(nextModuleId + 1);
+    setNewModuleTitle("");
+    showSaveMessage("Module added successfully!");
+  };
 
-  if (isLoading) {
+  const updateModuleTitle = (moduleId: number, newTitle: string) => {
+    setModules(modules.map(m => 
+      m.id === moduleId ? { ...m, title: newTitle } : m
+    ));
+    setEditingModule(null);
+    showSaveMessage("Module updated!");
+  };
+
+  const deleteModule = (moduleId: number) => {
+    if (confirm("Delete this module and all its lessons?")) {
+      setModules(modules.filter(m => m.id !== moduleId));
+      showSaveMessage("Module deleted!");
+    }
+  };
+
+  const toggleModulePublished = (moduleId: number) => {
+    setModules(modules.map(m => 
+      m.id === moduleId ? { ...m, isPublished: !m.isPublished } : m
+    ));
+  };
+
+  const addLesson = (moduleId: number) => {
+    if (!newLessonTitle.trim()) return;
+    
+    const module = modules.find(m => m.id === moduleId);
+    if (!module) return;
+
+    const newLesson: Lesson = {
+      id: nextLessonId,
+      moduleId,
+      title: newLessonTitle,
+      type: newLessonType,
+      order: module.lessons.length + 1,
+      isPublished: false,
+      estimatedMinutes: 15,
+    };
+
+    setModules(modules.map(m => 
+      m.id === moduleId 
+        ? { ...m, lessons: [...m.lessons, newLesson] }
+        : m
+    ));
+    
+    setNextLessonId(nextLessonId + 1);
+    setNewLessonTitle("");
+    setNewLessonType("text");
+    setAddingLessonToModule(null);
+    showSaveMessage("Lesson added successfully!");
+  };
+
+  const deleteLesson = (moduleId: number, lessonId: number) => {
+    if (confirm("Delete this lesson?")) {
+      setModules(modules.map(m => 
+        m.id === moduleId 
+          ? { ...m, lessons: m.lessons.filter(l => l.id !== lessonId) }
+          : m
+      ));
+      showSaveMessage("Lesson deleted!");
+    }
+  };
+
+  const showSaveMessage = (message: string) => {
+    setSaveMessage(message);
+    setTimeout(() => setSaveMessage(""), 2000);
+  };
+
+  const totalLessons = modules.reduce((acc, m) => acc + m.lessons.length, 0);
+  const totalDuration = modules.reduce((acc, m) => 
+    acc + m.lessons.reduce((lAcc, l) => lAcc + l.estimatedMinutes, 0), 0
+  );
+
+  if (!course) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <p className="text-muted-foreground">Course not found</p>
       </div>
     );
   }
-
-  const modules = course?.modules || [];
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -168,10 +244,16 @@ export default function CurriculumBuilder() {
               </Link>
               <div>
                 <h1 className="text-lg font-bold">Curriculum Builder</h1>
-                <p className="text-sm text-muted-foreground">{course?.title}</p>
+                <p className="text-sm text-muted-foreground">{course.title}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
+              {saveMessage && (
+                <div className="flex items-center gap-2 text-green-600 text-sm">
+                  <CheckCircle className="w-4 h-4" />
+                  {saveMessage}
+                </div>
+              )}
               <Link href={`/admin/courses/${id}`}>
                 <Button variant="outline" size="sm">
                   <Settings className="w-4 h-4 mr-2" />
@@ -195,20 +277,18 @@ export default function CurriculumBuilder() {
             <div className="text-sm text-muted-foreground">Modules</div>
           </div>
           <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
-            <div className="text-2xl font-bold" style={{ color: THEME_PRIMARY }}>
-              {modules.reduce((acc: number, m: Module) => acc + (m.lessons?.length || 0), 0)}
-            </div>
+            <div className="text-2xl font-bold" style={{ color: THEME_PRIMARY }}>{totalLessons}</div>
             <div className="text-sm text-muted-foreground">Lessons</div>
           </div>
           <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
-            <div className="text-2xl font-bold" style={{ color: THEME_PRIMARY }}>{course?.duration || 0}h</div>
+            <div className="text-2xl font-bold" style={{ color: THEME_PRIMARY }}>{Math.round(totalDuration / 60)}h {totalDuration % 60}m</div>
             <div className="text-sm text-muted-foreground">Duration</div>
           </div>
         </div>
 
         {/* Modules List */}
         <div className="space-y-4">
-          {modules.map((module: Module, moduleIndex: number) => (
+          {modules.map((module, moduleIndex) => (
             <div
               key={module.id}
               className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden"
@@ -226,23 +306,15 @@ export default function CurriculumBuilder() {
                   {editingModule === module.id ? (
                     <input
                       type="text"
-                      defaultValue={module.title}
-                      className="w-full px-2 py-1 border border-slate-200 dark:border-slate-600 rounded"
+                      value={editingModuleTitle}
+                      onChange={(e) => setEditingModuleTitle(e.target.value)}
+                      className="w-full px-2 py-1 border border-slate-200 dark:border-slate-600 rounded bg-white dark:bg-slate-700"
                       onClick={(e) => e.stopPropagation()}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
-                          updateModuleMutation.mutate({
-                            moduleId: module.id,
-                            data: { title: e.currentTarget.value },
-                          });
+                          updateModuleTitle(module.id, editingModuleTitle);
                         }
                         if (e.key === "Escape") setEditingModule(null);
-                      }}
-                      onBlur={(e) => {
-                        updateModuleMutation.mutate({
-                          moduleId: module.id,
-                          data: { title: e.target.value },
-                        });
                       }}
                       autoFocus
                     />
@@ -250,32 +322,34 @@ export default function CurriculumBuilder() {
                     <div>
                       <h3 className="font-semibold">{module.title}</h3>
                       <p className="text-sm text-muted-foreground">
-                        {module.lessons?.length || 0} lessons
+                        {module.lessons.length} lessons
                       </p>
                     </div>
                   )}
                 </div>
                 <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                  <span className={`px-2 py-0.5 rounded-full text-xs ${
-                    module.isPublished
-                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                      : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
-                  }`}>
+                  <button
+                    onClick={() => toggleModulePublished(module.id)}
+                    className={`px-2 py-0.5 rounded-full text-xs cursor-pointer ${
+                      module.isPublished
+                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                        : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                    }`}
+                  >
                     {module.isPublished ? "Published" : "Draft"}
-                  </span>
+                  </button>
                   <button
                     className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-600 rounded"
-                    onClick={() => setEditingModule(module.id)}
+                    onClick={() => {
+                      setEditingModule(module.id);
+                      setEditingModuleTitle(module.title);
+                    }}
                   >
                     <Edit className="w-4 h-4 text-muted-foreground" />
                   </button>
                   <button
                     className="p-1.5 hover:bg-red-100 dark:hover:bg-red-900/30 rounded"
-                    onClick={() => {
-                      if (confirm("Delete this module and all its lessons?")) {
-                        deleteModuleMutation.mutate(module.id);
-                      }
-                    }}
+                    onClick={() => deleteModule(module.id)}
                   >
                     <Trash2 className="w-4 h-4 text-red-500" />
                   </button>
@@ -290,7 +364,7 @@ export default function CurriculumBuilder() {
               {/* Lessons */}
               {expandedModules.has(module.id) && (
                 <div className="border-t border-slate-200 dark:border-slate-700">
-                  {module.lessons?.map((lesson: Lesson, lessonIndex: number) => {
+                  {module.lessons.map((lesson) => {
                     const LessonIcon = lessonTypeIcons[lesson.type] || FileText;
                     const iconColor = lessonTypeColors[lesson.type] || THEME_PRIMARY;
                     
@@ -309,7 +383,7 @@ export default function CurriculumBuilder() {
                         <div className="flex-1">
                           <p className="font-medium text-sm">{lesson.title}</p>
                           <p className="text-xs text-muted-foreground capitalize">
-                            {lesson.type} • {lesson.estimatedMinutes || 10} min
+                            {lesson.type} • {lesson.estimatedMinutes} min
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
@@ -320,11 +394,7 @@ export default function CurriculumBuilder() {
                           </Link>
                           <button
                             className="p-1.5 hover:bg-red-100 dark:hover:bg-red-900/30 rounded"
-                            onClick={() => {
-                              if (confirm("Delete this lesson?")) {
-                                deleteLessonMutation.mutate(lesson.id);
-                              }
-                            }}
+                            onClick={() => deleteLesson(module.id, lesson.id)}
                           >
                             <Trash2 className="w-4 h-4 text-red-500" />
                           </button>
@@ -342,6 +412,9 @@ export default function CurriculumBuilder() {
                           value={newLessonTitle}
                           onChange={(e) => setNewLessonTitle(e.target.value)}
                           className="flex-1"
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") addLesson(module.id);
+                          }}
                         />
                         <select
                           value={newLessonType}
@@ -356,24 +429,12 @@ export default function CurriculumBuilder() {
                         </select>
                         <Button
                           size="sm"
-                          onClick={() => {
-                            if (newLessonTitle.trim()) {
-                              createLessonMutation.mutate({
-                                moduleId: module.id,
-                                title: newLessonTitle,
-                                type: newLessonType,
-                              });
-                            }
-                          }}
-                          disabled={createLessonMutation.isPending}
+                          onClick={() => addLesson(module.id)}
+                          disabled={!newLessonTitle.trim()}
                           className="text-white"
                           style={{ backgroundColor: THEME_PRIMARY }}
                         >
-                          {createLessonMutation.isPending ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : (
-                            "Add"
-                          )}
+                          Add
                         </Button>
                         <Button
                           size="sm"
@@ -409,22 +470,17 @@ export default function CurriculumBuilder() {
                 value={newModuleTitle}
                 onChange={(e) => setNewModuleTitle(e.target.value)}
                 className="flex-1"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") addModule();
+                }}
               />
               <Button
-                onClick={() => {
-                  if (newModuleTitle.trim()) {
-                    createModuleMutation.mutate(newModuleTitle);
-                  }
-                }}
-                disabled={createModuleMutation.isPending || !newModuleTitle.trim()}
+                onClick={addModule}
+                disabled={!newModuleTitle.trim()}
                 className="text-white"
                 style={{ backgroundColor: THEME_PRIMARY }}
               >
-                {createModuleMutation.isPending ? (
-                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                ) : (
-                  <Plus className="w-4 h-4 mr-2" />
-                )}
+                <Plus className="w-4 h-4 mr-2" />
                 Add Module
               </Button>
             </div>
