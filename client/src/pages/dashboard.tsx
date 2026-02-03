@@ -222,12 +222,12 @@ export default function StudentDashboard() {
             </div>
             <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
               <div className="grid grid-cols-4 md:grid-cols-8 gap-4">
-                {stats.badges.map((item: any) => (
-                  <div key={item.userBadge.id} className="text-center">
-                    <div className="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center" style={{ backgroundColor: item.badge.color }}>
+                {stats.badges.map((badge: any) => (
+                  <div key={badge.id} className="text-center">
+                    <div className="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center" style={{ backgroundColor: THEME_PRIMARY }}>
                       <Trophy className="w-6 h-6 text-white" />
                     </div>
-                    <p className="text-xs font-medium truncate">{item.badge.name}</p>
+                    <p className="text-xs font-medium truncate">{badge.name}</p>
                   </div>
                 ))}
               </div>
