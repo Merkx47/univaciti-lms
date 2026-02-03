@@ -53,6 +53,7 @@ import LessonEditor from "@/pages/admin/lesson-editor";
 
 // Student dashboard
 import StudentDashboard from "@/pages/dashboard";
+import CoursesPage from "@/pages/courses";
 import CoursePlayer from "@/pages/course-player";
 import QuizPage from "@/pages/quiz";
 import LeaderboardPage from "@/pages/leaderboard";
@@ -105,6 +106,7 @@ function Router() {
       
       {/* Student dashboard */}
       <ProtectedRoute path="/dashboard" component={StudentDashboard}/>
+      <ProtectedRoute path="/courses" component={CoursesPage}/>
       <ProtectedRoute path="/course/:courseId/lesson/:lessonId" component={CoursePlayer}/>
       <ProtectedRoute path="/quiz/:quizId" component={QuizPage}/>
       <ProtectedRoute path="/leaderboard" component={LeaderboardPage}/>

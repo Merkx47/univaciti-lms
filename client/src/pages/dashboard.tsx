@@ -141,7 +141,7 @@ export default function StudentDashboard() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {enrollments.map((item: any) => (
                 <div
-                  key={item.enrollment.id}
+                  key={item.id}
                   className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-lg transition-shadow group"
                 >
                   <div className="h-32 bg-gradient-to-br from-blue-400 to-cyan-500 relative">
@@ -174,14 +174,14 @@ export default function StudentDashboard() {
                         <span>{item.course.duration}h</span>
                       </div>
                       <span className="text-sm font-medium" style={{ color: THEME_PRIMARY }}>
-                        {item.enrollment.progress}% Complete
+                        {item.progress}% Complete
                       </span>
                     </div>
                     <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full transition-all"
                         style={{
-                          width: `${item.enrollment.progress}%`,
+                          width: `${item.progress}%`,
                           backgroundColor: THEME_PRIMARY,
                         }}
                       />
