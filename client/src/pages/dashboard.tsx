@@ -2,7 +2,7 @@ import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import {
-  BookOpen, Award, Trophy, Flame, Clock, ChevronRight,
+  BookOpen, Award, Flame, Clock, ChevronRight,
   Play, Bell, LogOut, User, Settings, Sun, Moon, BarChart3
 } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
@@ -235,46 +235,6 @@ export default function StudentDashboard() {
           </div>
         )}
 
-        {/* Leaderboard Preview */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold">Leaderboard</h2>
-            <Link href="/leaderboard">
-              <Button variant="outline" size="sm">View All</Button>
-            </Link>
-          </div>
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
-            <div className="flex items-end justify-center gap-4 text-center">
-              <div className="flex-1 p-4 flex flex-col items-center">
-                <div className="h-24 flex items-end justify-center mb-3">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center text-white font-bold text-xl">
-                    2
-                  </div>
-                </div>
-                <p className="font-medium">Runner Up</p>
-                <p className="text-sm text-muted-foreground">8,500 pts</p>
-              </div>
-              <div className="flex-1 p-4 flex flex-col items-center">
-                <div className="h-24 flex items-end justify-center mb-3">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center text-white font-bold text-2xl">
-                    1
-                  </div>
-                </div>
-                <p className="font-medium">Champion</p>
-                <p className="text-sm text-muted-foreground">12,350 pts</p>
-              </div>
-              <div className="flex-1 p-4 flex flex-col items-center">
-                <div className="h-24 flex items-end justify-center mb-3">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center text-white font-bold text-xl">
-                    3
-                  </div>
-                </div>
-                <p className="font-medium">Third Place</p>
-                <p className="text-sm text-muted-foreground">7,200 pts</p>
-              </div>
-            </div>
-          </div>
-        </div>
       </main>
     </div>
   );
