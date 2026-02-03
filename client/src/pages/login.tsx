@@ -115,7 +115,7 @@ export default function Login() {
   useEffect(() => {
     if (user) {
       if (user.role === "admin" || user.role === "instructor") {
-        navigate("/admin");
+        navigate("/admin/dashboard");
       } else {
         navigate("/dashboard");
       }
