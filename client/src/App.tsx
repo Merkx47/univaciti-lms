@@ -5,6 +5,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ScrollToTop } from "@/components/scroll-to-top";
+import { AuthProvider } from "@/hooks/use-auth";
+import { AdminRoute, ProtectedRoute } from "@/lib/protected-route";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
 
@@ -39,6 +41,16 @@ import ContactPage from "@/pages/contact";
 import AboutPage from "@/pages/about";
 import FAQPage from "@/pages/faq";
 import BlogPage from "@/pages/blog";
+
+// Admin pages
+import AdminLoginPage from "@/pages/admin/login";
+import AdminDashboard from "@/pages/admin/dashboard";
+import AdminCourses from "@/pages/admin/courses";
+import CurriculumBuilder from "@/pages/admin/curriculum";
+import LessonEditor from "@/pages/admin/lesson-editor";
+
+// Student dashboard
+import StudentDashboard from "@/pages/dashboard";
 
 function Router() {
   return (
@@ -77,6 +89,18 @@ function Router() {
       <Route path="/faq" component={FAQPage}/>
       <Route path="/blog" component={BlogPage}/>
       
+      {/* Admin routes */}
+      <Route path="/admin/login" component={AdminLoginPage}/>
+      <AdminRoute path="/admin/dashboard" component={AdminDashboard}/>
+      <AdminRoute path="/admin/courses" component={AdminCourses}/>
+      <AdminRoute path="/admin/courses/:id/curriculum" component={CurriculumBuilder}/>
+      <AdminRoute path="/admin/lessons/:id/edit" component={LessonEditor}/>
+      <AdminRoute path="/admin/users" component={AdminDashboard}/>
+      <AdminRoute path="/admin/enrollments" component={AdminDashboard}/>
+      
+      {/* Student dashboard */}
+      <ProtectedRoute path="/dashboard" component={StudentDashboard}/>
+      
       <Route component={NotFound} />
     </Switch>
   );
@@ -86,11 +110,13 @@ function App() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="univaciti-ui-theme">
       <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <ScrollToTop />
-          <Toaster />
-          <Router />
-        </TooltipProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <ScrollToTop />
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );
