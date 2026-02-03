@@ -8,11 +8,11 @@ import { MiniSkillLogo } from "@/components/tool-logo";
 const THEME_PRIMARY = "#1E9AD6";
 const THEME_LIGHT = "#3AAFE6";
 
-// Certification Icons - AWS Cloud Icon
+// Cloud Engineering - Clean cloud with upload arrow
 function CloudIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 128 128" className={className} fill="currentColor">
-      <path d="M38.089 77.466l-11.4 4.896 10.559 4.514 12.241-4.514-11.4-4.896zm-17.138 6.12l-.382 22.034 16.679 7.345V90.089l-16.297-6.503zm34.276 0l-15.073 5.739V110.9l15.073-6.121V83.586zm17.979-68.551L61.73 19.931l10.635 4.515 12.241-4.515-11.476-4.896zm-15.914 6.503v22.034l14.231 4.132.459-20.046-14.69-6.12zm31.828 1.224L75.66 28.5v21.652l13.466-5.738-.006-22.652zM19.21 46.013l-11.4 4.896 10.559 4.514 12.241-4.514-11.4-4.896zM2.072 52.133l-.382 22.034 16.679 7.345V58.636L2.072 52.133zm34.276 0L21.275 57.87v21.576l15.073-6.12V52.133zm56.679-14.949l-11.399 4.896 10.558 4.515 12.241-4.515-11.4-4.896zm-17.137 6.121l-.383 22.034 16.679 7.344V49.808l-16.296-6.503zm34.275 0l-15.072 5.738v21.576l15.072-6.12V43.305z"/>
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+      <path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
     </svg>
   );
 }
