@@ -137,29 +137,30 @@ export default function ProgrammesPage() {
           {programmes.map((programme, index) => (
             <Link key={index} href={programme.link}>
               <div
-                className="rounded-2xl p-6 flex flex-col h-full cursor-pointer hover-lift shine-effect border border-white/20 transition-all duration-300 hover:scale-[1.02]"
-                style={{ backgroundColor: THEME_PRIMARY }}
+                className="rounded-2xl p-6 h-72 cursor-pointer bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm transition-all duration-200 hover:shadow-lg hover:border-[#1E9AD6]/50 flex flex-col"
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <programme.icon className="w-12 h-12 text-white" />
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center bg-[#1E9AD6]/10">
+                    <programme.icon className="w-7 h-7 text-[#1E9AD6]" />
+                  </div>
                   <div>
-                    <h3 className="text-xl font-bold text-white">{programme.name}</h3>
-                    <p className="text-sm text-white/90">{programme.fullName}</p>
+                    <h3 className="text-lg font-bold text-slate-800 dark:text-white">{programme.name}</h3>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">{programme.fullName}</p>
                   </div>
                 </div>
 
-                <p className="text-base text-white leading-relaxed flex-1 mb-4">
+                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed flex-1 mb-4">
                   {programme.description}
                 </p>
 
-                <div className="flex justify-between items-center text-sm text-white/80 mb-4">
+                <div className="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 mb-4 pt-2 border-t border-slate-100 dark:border-slate-700">
                   <span>{programme.duration}</span>
                   <span>{programme.format}</span>
                 </div>
 
                 <div
-                  className="self-end py-2 px-5 rounded-full text-white text-sm font-medium border border-white/50"
-                  style={{ backgroundColor: THEME_LIGHT }}
+                  className="py-2 px-5 rounded-lg text-white text-sm font-medium text-center transition-colors hover:opacity-90"
+                  style={{ backgroundColor: THEME_PRIMARY }}
                 >
                   Learn More
                 </div>

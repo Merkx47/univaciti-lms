@@ -651,26 +651,25 @@ function LearningProgrammeSection() {
           </p>
         </div>
         
-        <div className="grid sm:grid-cols-3 gap-3 max-w-4xl mx-auto">
+        <div className="grid sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
           {programmes.map((programme, index) => (
             <Link key={index} href={programme.link}>
               <div
-                className={`rounded-2xl p-5 flex flex-col h-52 cursor-pointer hover-lift shine-effect border border-white/20 fade-in-up stagger-${index + 1}`}
-                style={{ backgroundColor: THEME_PRIMARY }}
+                className={`rounded-2xl p-5 h-56 cursor-pointer bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm transition-all duration-200 hover:shadow-lg hover:border-[#1E9AD6]/50 flex flex-col fade-in-up stagger-${index + 1}`}
                 data-testid={`card-programme-${programme.id}`}
               >
-                <h3 className="text-base font-semibold text-white mb-3" data-testid={`text-programme-name-${index}`}>
+                <h3 className="text-base font-bold text-slate-800 dark:text-white mb-2" data-testid={`text-programme-name-${index}`}>
                   {programme.name}
                 </h3>
-                <p className="text-sm text-white/80 leading-relaxed flex-1" data-testid={`text-programme-description-${index}`}>
+                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed flex-1" data-testid={`text-programme-description-${index}`}>
                   {programme.description}
                 </p>
                 <div
-                  className="self-end py-1.5 px-4 rounded-full text-white text-xs font-medium border border-white/50 mt-auto"
-                  style={{ backgroundColor: THEME_LIGHT }}
+                  className="py-2 px-4 rounded-lg text-white text-xs font-medium text-center transition-colors hover:opacity-90 mt-auto"
+                  style={{ backgroundColor: THEME_PRIMARY }}
                   data-testid={`button-programme-more-${index}`}
                 >
-                  More
+                  Learn More
                 </div>
               </div>
             </Link>

@@ -204,7 +204,7 @@ export default function CertificationsPage() {
           {specializations.map((spec, index) => (
             <Link key={index} href={`/certifications/${spec.id}`}>
               <div
-                className="rounded-2xl p-5 flex flex-col min-h-80 cursor-pointer bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm transition-all duration-200 hover:shadow-lg hover:border-[#1E9AD6]/50"
+                className="rounded-2xl p-5 h-80 cursor-pointer bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm transition-all duration-200 hover:shadow-lg hover:border-[#1E9AD6]/50 flex flex-col"
               >
                 <div className="flex items-start justify-between mb-3">
                   <h3 className="text-base font-bold text-slate-800 dark:text-white leading-tight flex-1 pr-2">
@@ -215,26 +215,26 @@ export default function CertificationsPage() {
                   </div>
                 </div>
 
-                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed flex-1 mb-4">
+                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed flex-1 mb-4 line-clamp-4">
                   {spec.description}
                 </p>
 
-                <div className="flex flex-wrap gap-1.5 mb-4">
+                <div className="flex flex-wrap gap-1.5 mb-4 h-16 content-start overflow-hidden">
                   {spec.skills.slice(0, 3).map((skill, i) => (
-                    <span key={i} className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium">
+                    <span key={i} className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium h-7">
                       <MiniSkillLogo name={skill} size="sm" />
                       {skill}
                     </span>
                   ))}
                   {spec.skills.length > 3 && (
-                    <span className="text-xs px-2.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">
+                    <span className="text-xs px-2.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium h-7">
                       +{spec.skills.length - 3}
                     </span>
                   )}
                 </div>
 
                 <div
-                  className="self-start py-2 px-4 rounded-lg text-white text-xs font-semibold transition-colors hover:opacity-90"
+                  className="w-full py-2.5 px-4 rounded-lg text-white text-sm font-semibold text-center transition-colors hover:opacity-90 mt-auto"
                   style={{ backgroundColor: THEME_PRIMARY }}
                 >
                   View Details
