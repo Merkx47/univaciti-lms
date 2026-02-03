@@ -3,13 +3,31 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import {
   BookOpen, Award, Trophy, Flame, Clock, ChevronRight,
-  Play, Bell, LogOut, User, Settings, Sun, Moon, BarChart3
+  Play, Bell, LogOut, User, Settings, Sun, Moon, BarChart3,
+  Rocket, Zap, Sunrise, Target, Star, BadgeCheck, Lock
 } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import logoUrl from "@assets/logo_1769031259580.png";
-import { mockEnrollments, mockUserStats, techLogos } from "@/lib/mock-data";
+import { mockEnrollments, mockUserStats, techLogos, allAchievements } from "@/lib/mock-data";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const THEME_PRIMARY = "#1E9AD6";
+
+const getAchievementIcon = (iconName: string, className: string) => {
+  const icons: Record<string, React.ReactNode> = {
+    rocket: <Rocket className={className} />,
+    flame: <Flame className={className} />,
+    trophy: <Trophy className={className} />,
+    award: <Award className={className} />,
+    zap: <Zap className={className} />,
+    moon: <Moon className={className} />,
+    sunrise: <Sunrise className={className} />,
+    target: <Target className={className} />,
+    star: <Star className={className} />,
+    badge: <BadgeCheck className={className} />,
+  };
+  return icons[iconName] || <Trophy className={className} />;
+};
 
 export default function StudentDashboard() {
   const { user, logoutMutation } = useAuth();
@@ -215,25 +233,57 @@ export default function StudentDashboard() {
         </div>
 
         {/* Badges & Achievements */}
-        {stats?.badges && stats.badges.length > 0 && (
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold">Achievements</h2>
-            </div>
-            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
-              <div className="grid grid-cols-4 md:grid-cols-8 gap-4">
-                {stats.badges.map((badge: any) => (
-                  <div key={badge.id} className="text-center">
-                    <div className="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center" style={{ backgroundColor: THEME_PRIMARY }}>
-                      <Trophy className="w-6 h-6 text-white" />
-                    </div>
-                    <p className="text-xs font-medium truncate">{badge.name}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold">Achievements</h2>
+            <span className="text-sm text-muted-foreground">
+              {stats?.earnedBadgeIds?.length || 0} of {allAchievements.length} unlocked
+            </span>
           </div>
-        )}
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
+            <TooltipProvider>
+              <div className="grid grid-cols-5 md:grid-cols-10 gap-4">
+                {allAchievements.map((achievement) => {
+                  const isEarned = stats?.earnedBadgeIds?.includes(achievement.id);
+                  return (
+                    <Tooltip key={achievement.id}>
+                      <TooltipTrigger asChild>
+                        <div className="text-center cursor-pointer group">
+                          <div className={`w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center relative transition-transform group-hover:scale-110 ${
+                            isEarned 
+                              ? '' 
+                              : 'bg-slate-200 dark:bg-slate-700'
+                          }`} style={isEarned ? { backgroundColor: THEME_PRIMARY } : {}}>
+                            {isEarned ? (
+                              getAchievementIcon(achievement.icon, "w-6 h-6 text-white")
+                            ) : (
+                              <>
+                                {getAchievementIcon(achievement.icon, "w-6 h-6 text-slate-400 dark:text-slate-500 opacity-50")}
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <Lock className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                                </div>
+                              </>
+                            )}
+                          </div>
+                          <p className={`text-xs font-medium truncate ${
+                            isEarned ? '' : 'text-muted-foreground'
+                          }`}>{achievement.name}</p>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="max-w-[200px]">
+                        <p className="font-medium">{achievement.name}</p>
+                        <p className="text-xs text-muted-foreground">{achievement.description}</p>
+                        {!isEarned && (
+                          <p className="text-xs mt-1 text-blue-500">Unlock: {achievement.unlockCriteria}</p>
+                        )}
+                      </TooltipContent>
+                    </Tooltip>
+                  );
+                })}
+              </div>
+            </TooltipProvider>
+          </div>
+        </div>
 
       </main>
     </div>
