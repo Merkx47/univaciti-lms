@@ -5,19 +5,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Link, useLocation } from "wouter";
 import logoUrl from "@assets/logo_1769031259580.png";
 import worldMapImg from "@assets/world_map.png";
-import { Eye, EyeOff, Mail, Lock, User, GraduationCap, Rocket, Target, Zap, ChevronLeft, ChevronRight, Home, Sun, Moon, ArrowLeft } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User, GraduationCap, Rocket, Target, Zap, ChevronLeft, ChevronRight, Sun, Moon, ArrowLeft, Loader2 } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
-import { SiApple, SiGoogle, SiFacebook, SiLinkedin } from "react-icons/si";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import { AppleIcon, GoogleIcon, FacebookIcon, LinkedInIcon, XIcon } from "@/components/icons";
 
 const THEME_PRIMARY = "#1E9AD6";
-
-function XIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-    </svg>
-  );
-}
 
 const slides = [
   {
@@ -264,27 +258,27 @@ export default function Register() {
                 className="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center hover:scale-110 hover:shadow-lg transition-all duration-300"
                 data-testid="button-sso-apple"
               >
-                <SiApple className="w-6 h-6" />
+                <AppleIcon className="w-6 h-6" />
               </button>
               <button
                 className="w-12 h-12 rounded-full border border-border bg-background flex items-center justify-center hover:scale-110 hover:shadow-lg transition-all duration-300"
                 data-testid="button-sso-google"
               >
-                <SiGoogle className="w-5 h-5" style={{ color: "#4285F4" }} />
+                <GoogleIcon className="w-5 h-5" />
               </button>
               <button
                 className="w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 hover:shadow-lg transition-all duration-300"
                 style={{ backgroundColor: "#1877F2" }}
                 data-testid="button-sso-facebook"
               >
-                <SiFacebook className="w-6 h-6 text-white" />
+                <FacebookIcon className="w-6 h-6 text-white" />
               </button>
               <button
                 className="w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 hover:shadow-lg transition-all duration-300"
                 style={{ backgroundColor: "#0A66C2" }}
                 data-testid="button-sso-linkedin"
               >
-                <SiLinkedin className="w-6 h-6 text-white" />
+                <LinkedInIcon className="w-6 h-6 text-white" />
               </button>
               <button
                 className="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center hover:scale-110 hover:shadow-lg transition-all duration-300"

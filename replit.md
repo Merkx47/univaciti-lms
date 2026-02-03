@@ -29,7 +29,7 @@ The frontend follows a component-based architecture with:
   - CoursesContent: Detailed course modules, skills, and tools for each specialization
   - StructureContent: Programme structure with timeline and phases
   - WorldMapBackground: SVG world map watermark background
-  - Cloud provider icons: AWS (SiAmazon), GCP (SiGooglecloud), Huawei (SiHuawei)
+  - Cloud provider icons: Custom SVG components (AWSIcon, GCPIcon, HuaweiIcon) in `client/src/components/icons.tsx`
 - Custom hooks in `client/src/hooks/`
 - Utility functions in `client/src/lib/`
 
@@ -58,8 +58,8 @@ Each programme page (TESA, STEM, NEST) features:
 - Primary blue color (matching logo): `#1E9AD6`
 - Lighter blue for buttons: `#3AAFE6`
 - Logo: `attached_assets/logo_1769031259580.png` (transparent PNG, bright blue)
-- Uses react-icons/si for brand icons (cloud platforms, companies)
-- Custom SVG icons for programmes and certifications where brand icons unavailable
+- Custom SVG icons in `client/src/components/icons.tsx` for all brand logos (Apple, Google, Facebook, LinkedIn, X, Instagram, AWS, GCP, Huawei)
+- Lucide React for general UI icons
 
 ### Additional Routes
 - `/recruitment` - Recruiter registration page

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
-import { SiAmazon, SiGooglecloud, SiHuawei } from "react-icons/si";
+import { AWSIcon, GCPIcon, HuaweiIcon } from "@/components/icons";
 import azureLogo from "@assets/image_1769038035704.png";
 import worldMapImg from "@assets/world_map.png";
 
@@ -81,10 +81,10 @@ export const tabs = [
 ];
 
 export const cloudProviders = [
-  { name: "AWS", icon: SiAmazon, color: "#FF9900", isImage: false },
+  { name: "AWS", icon: AWSIcon, color: "#FF9900", isImage: false },
   { name: "Azure", icon: null, color: "#0078D4", isImage: true, imageSrc: azureLogo },
-  { name: "GCP", icon: SiGooglecloud, color: "#4285F4", isImage: false },
-  { name: "Huawei", icon: SiHuawei, color: "#FF0000", isImage: false },
+  { name: "GCP", icon: GCPIcon, color: "#4285F4", isImage: false },
+  { name: "Huawei", icon: HuaweiIcon, color: "#FF0000", isImage: false },
 ];
 
 // Reusable Back Button Component

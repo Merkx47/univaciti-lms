@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { Sun, Moon, ArrowLeft, Clock, BookOpen, Target, Award } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
-import { SiAmazon, SiGooglecloud, SiHuawei } from "react-icons/si";
+import { AWSIcon, GCPIcon, HuaweiIcon } from "@/components/icons";
 import logoUrl from "@assets/logo_1769031259580.png";
 import worldMapImg from "@assets/world_map.png";
 import azureLogo from "@assets/image_1769038035704.png";
@@ -190,7 +190,7 @@ export default function CloudEngineeringPage() {
             <h2 className="text-xl font-semibold mb-6">Cloud Platforms Covered</h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="flex flex-col items-center gap-3 p-5 rounded-xl bg-muted/50 border border-border/50 hover:border-[#FF9900]/50 transition-colors">
-                <SiAmazon className="w-10 h-10 text-[#FF9900]" />
+                <AWSIcon className="w-10 h-10 text-[#FF9900]" />
                 <span className="text-sm font-medium">AWS</span>
               </div>
               <div className="flex flex-col items-center gap-3 p-5 rounded-xl bg-muted/50 border border-border/50 hover:border-[#0078D4]/50 transition-colors">
@@ -198,11 +198,11 @@ export default function CloudEngineeringPage() {
                 <span className="text-sm font-medium">Microsoft Azure</span>
               </div>
               <div className="flex flex-col items-center gap-3 p-5 rounded-xl bg-muted/50 border border-border/50 hover:border-[#4285F4]/50 transition-colors">
-                <SiGooglecloud className="w-8 h-8 text-[#4285F4]" />
+                <GCPIcon className="w-8 h-8 text-[#4285F4]" />
                 <span className="text-sm font-medium">Google Cloud</span>
               </div>
               <div className="flex flex-col items-center gap-3 p-5 rounded-xl bg-muted/50 border border-border/50 hover:border-[#CF0A2C]/50 transition-colors">
-                <SiHuawei className="w-8 h-8 text-[#CF0A2C]" />
+                <HuaweiIcon className="w-8 h-8 text-[#CF0A2C]" />
                 <span className="text-sm font-medium">Huawei Cloud</span>
               </div>
             </div>

@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
-import { Home, Sun, Moon, ArrowLeft } from "lucide-react";
+import { Sun, Moon, ArrowLeft } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
-import { SiAmazon, SiGooglecloud, SiHuawei } from "react-icons/si";
+import { AWSIcon, GCPIcon, HuaweiIcon } from "@/components/icons";
 import logoUrl from "@assets/logo_1769031259580.png";
 import pepsiLogo from "@assets/image_1769036912372.png";
 import unionBankLogo from "@assets/image_1769037382283.png";
@@ -152,7 +152,7 @@ export default function RecruitmentPage() {
           <h3 className="text-lg font-medium mb-6 text-center" style={{ color: THEME_PRIMARY }}>Cloud Platform Partners</h3>
           <div className="flex flex-wrap items-center justify-center gap-10">
             <div className="flex flex-col items-center gap-2">
-              <SiAmazon className="w-14 h-14" style={{ color: "#FF9900" }} />
+              <AWSIcon className="w-14 h-14" style={{ color: "#FF9900" }} />
               <span className="text-xs text-foreground/70">AWS</span>
             </div>
             <div className="flex flex-col items-center gap-2">
@@ -160,11 +160,11 @@ export default function RecruitmentPage() {
               <span className="text-xs text-foreground/70">Azure</span>
             </div>
             <div className="flex flex-col items-center gap-2">
-              <SiGooglecloud className="w-14 h-14" style={{ color: "#4285F4" }} />
+              <GCPIcon className="w-14 h-14" style={{ color: "#4285F4" }} />
               <span className="text-xs text-foreground/70">Google Cloud</span>
             </div>
             <div className="flex flex-col items-center gap-2">
-              <SiHuawei className="w-14 h-14" style={{ color: "#FF0000" }} />
+              <HuaweiIcon className="w-14 h-14" style={{ color: "#FF0000" }} />
               <span className="text-xs text-foreground/70">Huawei Cloud</span>
             </div>
           </div>

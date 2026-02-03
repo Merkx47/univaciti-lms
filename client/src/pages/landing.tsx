@@ -12,7 +12,7 @@ import {
   GraduationCap,
   Star,
 } from "lucide-react";
-import { SiFacebook, SiLinkedin, SiInstagram } from "react-icons/si";
+import { FacebookIcon, LinkedInIcon, InstagramIcon } from "@/components/icons";
 import {
   Navbar as ResizableNavbar,
   NavBody,
@@ -782,16 +782,16 @@ function Footer() {
         {/* Social Media */}
         <div className="flex items-center justify-center gap-4 mb-8">
           <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-[#1877F2] transition-colors group">
-            <SiFacebook className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
+            <FacebookIcon className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
           </a>
           <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-[#0A66C2] transition-colors group">
-            <SiLinkedin className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
+            <LinkedInIcon className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
           </a>
           <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-black transition-colors group">
             <XIcon className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
           </a>
           <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-gradient-to-br hover:from-purple-600 hover:via-pink-500 hover:to-orange-400 transition-colors group">
-            <SiInstagram className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
+            <InstagramIcon className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
           </a>
         </div>
 
