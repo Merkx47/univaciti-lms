@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
@@ -8,21 +7,9 @@ import {
 } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import logoUrl from "@assets/logo_1769031259580.png";
+import { mockEnrollments, mockUserStats, techLogos } from "@/lib/mock-data";
 
 const THEME_PRIMARY = "#1E9AD6";
-
-const techLogos: Record<string, string> = {
-  aws: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg",
-  azure: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg",
-  googlecloud: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg",
-  python: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
-  java: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg",
-  react: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
-  docker: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",
-  kubernetes: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg",
-  tensorflow: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg",
-  postgresql: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg",
-};
 
 export default function StudentDashboard() {
   const { user, logoutMutation } = useAuth();
@@ -30,13 +17,8 @@ export default function StudentDashboard() {
   const { theme, setTheme } = useTheme();
   const isDark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
-  const { data: enrollments } = useQuery<any[]>({
-    queryKey: ["/api/enrollments"],
-  });
-
-  const { data: stats } = useQuery<any>({
-    queryKey: ["/api/user/stats"],
-  });
+  const enrollments = mockEnrollments;
+  const stats = mockUserStats;
 
   const handleLogout = async () => {
     await logoutMutation.mutateAsync();
@@ -123,7 +105,7 @@ export default function StudentDashboard() {
                 <Award className="w-5 h-5 text-green-600" />
               </div>
             </div>
-            <div className="text-2xl font-bold">{stats?.totalLessonsCompleted || 0}</div>
+            <div className="text-2xl font-bold">{stats?.lessonsCompleted || 0}</div>
             <div className="text-sm text-muted-foreground">Lessons Completed</div>
           </div>
           <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-slate-200 dark:border-slate-700">

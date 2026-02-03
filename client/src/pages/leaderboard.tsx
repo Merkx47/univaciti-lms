@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,20 +6,19 @@ import {
   ArrowLeft, Users, Calendar, TrendingUp
 } from "lucide-react";
 import logoUrl from "@assets/logo_1769031259580.png";
+import { mockLeaderboard, mockUserStats } from "@/lib/mock-data";
 
 const THEME_PRIMARY = "#1E9AD6";
 
 interface LeaderboardEntry {
   rank: number;
-  userId: number;
-  username: string;
-  firstName?: string;
-  lastName?: string;
-  avatarUrl?: string;
-  totalPoints: number;
+  id: number;
+  firstName: string;
+  lastName: string;
+  avatar?: string;
+  points: number;
   coursesCompleted: number;
-  currentStreak: number;
-  badges: number;
+  streak: number;
 }
 
 const rankIcons = [Crown, Medal, Medal];
@@ -30,18 +28,18 @@ export default function LeaderboardPage() {
   const [timeframe, setTimeframe] = useState<"weekly" | "monthly" | "alltime">("weekly");
   const [category, setCategory] = useState<"points" | "courses" | "streak">("points");
 
-  const { data: leaderboard, isLoading } = useQuery<LeaderboardEntry[]>({
-    queryKey: ["/api/leaderboard", timeframe, category],
-    queryFn: async () => {
-      const res = await fetch(`/api/leaderboard?timeframe=${timeframe}&category=${category}`);
-      if (!res.ok) throw new Error("Failed to fetch leaderboard");
-      return res.json();
-    },
-  });
-
-  const { data: currentUser } = useQuery<LeaderboardEntry>({
-    queryKey: ["/api/leaderboard/me"],
-  });
+  const leaderboard: LeaderboardEntry[] = mockLeaderboard;
+  const isLoading = false;
+  
+  const currentUser = {
+    rank: mockUserStats.rank,
+    id: 3,
+    firstName: "You",
+    lastName: "",
+    points: mockUserStats.totalPoints,
+    coursesCompleted: mockUserStats.coursesCompleted,
+    streak: mockUserStats.currentStreak,
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
@@ -78,11 +76,9 @@ export default function LeaderboardPage() {
             {leaderboard?.[0] && (
               <div>
                 <p className="text-2xl font-bold">
-                  {leaderboard[0].firstName && leaderboard[0].lastName 
-                    ? `${leaderboard[0].firstName} ${leaderboard[0].lastName}`
-                    : leaderboard[0].username}
+                  {leaderboard[0].firstName} {leaderboard[0].lastName}
                 </p>
-                <p className="text-white/80">{leaderboard[0].totalPoints.toLocaleString()} points</p>
+                <p className="text-white/80">{leaderboard[0].points.toLocaleString()} points</p>
               </div>
             )}
           </div>
@@ -156,19 +152,17 @@ export default function LeaderboardPage() {
                 #{currentUser.rank}
               </div>
               <div className="w-14 h-14 rounded-full flex items-center justify-center text-white text-xl font-bold" style={{ backgroundColor: THEME_PRIMARY }}>
-                {currentUser.firstName?.[0] || currentUser.username[0].toUpperCase()}
+                {currentUser.firstName?.[0] || "Y"}
               </div>
               <div className="flex-1">
                 <p className="font-bold text-lg">
-                  {currentUser.firstName && currentUser.lastName
-                    ? `${currentUser.firstName} ${currentUser.lastName}`
-                    : currentUser.username}
+                  {currentUser.firstName} {currentUser.lastName}
                 </p>
                 <p className="text-sm text-muted-foreground">Your current ranking</p>
               </div>
               <div className="grid grid-cols-3 gap-8 text-center">
                 <div>
-                  <p className="text-2xl font-bold" style={{ color: THEME_PRIMARY }}>{currentUser.totalPoints.toLocaleString()}</p>
+                  <p className="text-2xl font-bold" style={{ color: THEME_PRIMARY }}>{currentUser.points.toLocaleString()}</p>
                   <p className="text-xs text-muted-foreground">Points</p>
                 </div>
                 <div>
@@ -176,7 +170,7 @@ export default function LeaderboardPage() {
                   <p className="text-xs text-muted-foreground">Courses</p>
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-orange-500">{currentUser.currentStreak}</p>
+                  <p className="text-2xl font-bold text-orange-500">{currentUser.streak}</p>
                   <p className="text-xs text-muted-foreground">Day Streak</p>
                 </div>
               </div>
@@ -204,7 +198,7 @@ export default function LeaderboardPage() {
 
                 return (
                   <div 
-                    key={entry.userId}
+                    key={entry.id}
                     className={`flex items-center gap-4 p-6 ${
                       index === 0 ? "bg-amber-50/50 dark:bg-amber-900/10" : ""
                     }`}
@@ -216,13 +210,11 @@ export default function LeaderboardPage() {
                       className="w-14 h-14 rounded-full flex items-center justify-center text-white text-xl font-bold"
                       style={{ backgroundColor: THEME_PRIMARY }}
                     >
-                      {entry.firstName?.[0] || entry.username[0].toUpperCase()}
+                      {entry.firstName?.[0] || "U"}
                     </div>
                     <div className="flex-1">
                       <p className="font-bold">
-                        {entry.firstName && entry.lastName
-                          ? `${entry.firstName} ${entry.lastName}`
-                          : entry.username}
+                        {entry.firstName} {entry.lastName}
                       </p>
                       <div className="flex items-center gap-3 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1">
@@ -231,13 +223,13 @@ export default function LeaderboardPage() {
                         </span>
                         <span className="flex items-center gap-1">
                           <Flame className="w-3 h-3" />
-                          {entry.currentStreak} day streak
+                          {entry.streak} day streak
                         </span>
                       </div>
                     </div>
                     <div className="text-right">
                       <p className="text-2xl font-bold" style={{ color: THEME_PRIMARY }}>
-                        {entry.totalPoints.toLocaleString()}
+                        {entry.points.toLocaleString()}
                       </p>
                       <p className="text-xs text-muted-foreground">points</p>
                     </div>
@@ -247,7 +239,7 @@ export default function LeaderboardPage() {
 
               {/* Rest of the leaderboard */}
               {leaderboard?.slice(3).map((entry) => (
-                <div key={entry.userId} className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-700/30">
+                <div key={entry.id} className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-700/30">
                   <div className="w-12 text-center font-bold text-lg text-muted-foreground">
                     {entry.rank}
                   </div>
@@ -255,23 +247,21 @@ export default function LeaderboardPage() {
                     className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
                     style={{ backgroundColor: THEME_PRIMARY }}
                   >
-                    {entry.firstName?.[0] || entry.username[0].toUpperCase()}
+                    {entry.firstName?.[0] || "U"}
                   </div>
                   <div className="flex-1">
                     <p className="font-medium">
-                      {entry.firstName && entry.lastName
-                        ? `${entry.firstName} ${entry.lastName}`
-                        : entry.username}
+                      {entry.firstName} {entry.lastName}
                     </p>
                   </div>
                   <div className="flex items-center gap-6 text-sm">
                     <span className="text-muted-foreground">{entry.coursesCompleted} courses</span>
                     <span className="flex items-center gap-1 text-orange-500">
                       <Flame className="w-4 h-4" />
-                      {entry.currentStreak}
+                      {entry.streak}
                     </span>
                     <span className="font-bold" style={{ color: THEME_PRIMARY }}>
-                      {entry.totalPoints.toLocaleString()} pts
+                      {entry.points.toLocaleString()} pts
                     </span>
                   </div>
                 </div>
