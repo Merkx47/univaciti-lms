@@ -22,11 +22,11 @@ function WorldMapWatermark() {
 
 function ReactLogoIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 80 80" className={className} fill="none" stroke="currentColor" strokeWidth="2">
-      <ellipse cx="40" cy="40" rx="26" ry="10"/>
-      <ellipse cx="40" cy="40" rx="26" ry="10" transform="rotate(60 40 40)"/>
-      <ellipse cx="40" cy="40" rx="26" ry="10" transform="rotate(-60 40 40)"/>
-      <circle cx="40" cy="40" r="5" fill="currentColor"/>
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.5">
+      <circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/>
+      <ellipse cx="12" cy="12" rx="10" ry="4"/>
+      <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/>
+      <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-60 12 12)"/>
     </svg>
   );
 }

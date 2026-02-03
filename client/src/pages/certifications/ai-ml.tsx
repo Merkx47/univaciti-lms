@@ -22,17 +22,12 @@ function WorldMapWatermark() {
 
 function RobotIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 80 80" className={className} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="18" y="28" width="44" height="36" rx="4"/>
-      <rect x="24" y="36" width="10" height="8" rx="2"/>
-      <rect x="46" y="36" width="10" height="8" rx="2"/>
-      <path d="M32 54H48"/>
-      <path d="M40 12V28"/>
-      <circle cx="40" cy="12" r="4"/>
-      <path d="M12 42H18"/>
-      <path d="M62 42H68"/>
-      <path d="M28 64V70"/>
-      <path d="M52 64V70"/>
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+      <path d="M12 2a1 1 0 011 1v2h3a3 3 0 013 3v2a1 1 0 01-2 0V8a1 1 0 00-1-1H8a1 1 0 00-1 1v2a1 1 0 01-2 0V8a3 3 0 013-3h3V3a1 1 0 011-1z"/>
+      <rect x="5" y="10" width="14" height="10" rx="2"/>
+      <circle cx="9" cy="14" r="1.5"/>
+      <circle cx="15" cy="14" r="1.5"/>
+      <path d="M9 18h6"/>
     </svg>
   );
 }

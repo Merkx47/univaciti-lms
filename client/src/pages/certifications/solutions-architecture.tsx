@@ -22,14 +22,8 @@ function WorldMapWatermark() {
 
 function BlueprintIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 80 80" className={className} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="10" y="10" width="60" height="60" rx="4"/>
-      <circle cx="25" cy="25" r="6"/>
-      <circle cx="55" cy="25" r="6"/>
-      <circle cx="40" cy="55" r="6"/>
-      <path d="M31 25H49"/>
-      <path d="M25 31V40L40 49"/>
-      <path d="M55 31V40L40 49"/>
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+      <path d="M22 9V7h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2v-2h-2V9h2zm-4 10H4V5h14v14zM6 13h5v4H6zm6-6h4v3h-4zM6 7h5v5H6zm6 4h4v6h-4z"/>
     </svg>
   );
 }

@@ -23,13 +23,8 @@ function WorldMapWatermark() {
 
 function ChartIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 80 80" className={className} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="12" y="52" width="10" height="16"/>
-      <rect x="27" y="38" width="10" height="30"/>
-      <rect x="42" y="24" width="10" height="44"/>
-      <rect x="57" y="12" width="10" height="56"/>
-      <path d="M12 22L27 34L47 20L67 8"/>
-      <circle cx="67" cy="8" r="3" fill="currentColor"/>
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+      <path d="M3 3v18h18v-2H5V3H3zm4 14h2v-7H7v7zm4 0h2V7h-2v10zm4 0h2v-4h-2v4zm4 0h2V9h-2v8z"/>
     </svg>
   );
 }

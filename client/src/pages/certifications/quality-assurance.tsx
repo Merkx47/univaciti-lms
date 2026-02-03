@@ -22,9 +22,8 @@ function WorldMapWatermark() {
 
 function QAIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 80 80" className={className} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="40" cy="40" r="24"/>
-      <path d="M28 40L36 48L52 32"/>
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+      <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
     </svg>
   );
 }
