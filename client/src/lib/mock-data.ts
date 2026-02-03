@@ -328,6 +328,19 @@ export const mockEnrollments = [
   },
 ];
 
+export const allAchievements = [
+  { id: 1, name: "First Steps", icon: "rocket", description: "Complete your first lesson", unlockCriteria: "Complete 1 lesson" },
+  { id: 2, name: "Week Warrior", icon: "flame", description: "Maintain a 7-day learning streak", unlockCriteria: "7-day streak" },
+  { id: 3, name: "Quiz Master", icon: "trophy", description: "Score 100% on any quiz", unlockCriteria: "Perfect quiz score" },
+  { id: 4, name: "Course Champion", icon: "award", description: "Complete your first course", unlockCriteria: "Finish 1 course" },
+  { id: 5, name: "Speed Learner", icon: "zap", description: "Complete 5 lessons in one day", unlockCriteria: "5 lessons in 24hrs" },
+  { id: 6, name: "Night Owl", icon: "moon", description: "Study after 10 PM", unlockCriteria: "Learn after 10 PM" },
+  { id: 7, name: "Early Bird", icon: "sunrise", description: "Study before 7 AM", unlockCriteria: "Learn before 7 AM" },
+  { id: 8, name: "Dedicated", icon: "target", description: "Reach 30-day learning streak", unlockCriteria: "30-day streak" },
+  { id: 9, name: "Expert", icon: "star", description: "Complete 5 courses", unlockCriteria: "Finish 5 courses" },
+  { id: 10, name: "Certified Pro", icon: "badge", description: "Earn your first certification", unlockCriteria: "Pass certification exam" },
+];
+
 export const mockUserStats = {
   totalPoints: 1250,
   coursesCompleted: 2,
@@ -337,11 +350,7 @@ export const mockUserStats = {
   currentStreak: 14,
   longestStreak: 21,
   totalTimeSpent: 4320,
-  badges: [
-    { id: 1, name: "First Steps", icon: "rocket", earnedAt: "2026-01-16T10:00:00Z" },
-    { id: 2, name: "Week Warrior", icon: "flame", earnedAt: "2026-01-23T10:00:00Z" },
-    { id: 3, name: "Quiz Master", icon: "trophy", earnedAt: "2026-01-25T14:30:00Z" },
-  ],
+  earnedBadgeIds: [1, 2, 3],
   rank: 23,
   totalStudents: 1523,
 };
