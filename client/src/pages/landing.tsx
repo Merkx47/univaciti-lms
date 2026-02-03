@@ -661,15 +661,17 @@ function LearningProgrammeSection() {
                 <h3 className="text-base font-bold text-slate-800 dark:text-white mb-2" data-testid={`text-programme-name-${index}`}>
                   {programme.name}
                 </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed flex-1" data-testid={`text-programme-description-${index}`}>
+                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed h-24 overflow-hidden" data-testid={`text-programme-description-${index}`}>
                   {programme.description}
                 </p>
-                <div
-                  className="py-2 px-4 rounded-lg text-white text-xs font-medium text-center transition-colors hover:opacity-90 mt-auto"
-                  style={{ backgroundColor: THEME_PRIMARY }}
-                  data-testid={`button-programme-more-${index}`}
-                >
-                  Learn More
+                <div className="mt-auto">
+                  <div
+                    className="py-2 px-4 rounded-lg text-white text-xs font-medium text-center transition-colors hover:opacity-90"
+                    style={{ backgroundColor: THEME_PRIMARY }}
+                    data-testid={`button-programme-more-${index}`}
+                  >
+                    Learn More
+                  </div>
                 </div>
               </div>
             </Link>

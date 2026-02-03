@@ -149,20 +149,22 @@ export default function ProgrammesPage() {
                   </div>
                 </div>
 
-                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed flex-1 mb-4">
+                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed h-16 overflow-hidden mb-4">
                   {programme.description}
                 </p>
 
-                <div className="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 mb-4 pt-2 border-t border-slate-100 dark:border-slate-700">
-                  <span>{programme.duration}</span>
-                  <span>{programme.format}</span>
-                </div>
+                <div className="mt-auto">
+                  <div className="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 mb-4 pt-2 border-t border-slate-100 dark:border-slate-700">
+                    <span>{programme.duration}</span>
+                    <span>{programme.format}</span>
+                  </div>
 
-                <div
-                  className="py-2 px-5 rounded-lg text-white text-sm font-medium text-center transition-colors hover:opacity-90"
-                  style={{ backgroundColor: THEME_PRIMARY }}
-                >
-                  Learn More
+                  <div
+                    className="py-2 px-5 rounded-lg text-white text-sm font-medium text-center transition-colors hover:opacity-90"
+                    style={{ backgroundColor: THEME_PRIMARY }}
+                  >
+                    Learn More
+                  </div>
                 </div>
               </div>
             </Link>
