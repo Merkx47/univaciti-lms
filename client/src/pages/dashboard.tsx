@@ -271,10 +271,10 @@ export default function StudentDashboard() {
                         </div>
                       </TooltipTrigger>
                       <TooltipContent side="bottom" className="max-w-[200px]">
-                        <p className="font-medium">{achievement.name}</p>
-                        <p className="text-xs text-muted-foreground">{achievement.description}</p>
+                        <p className="font-medium text-white">{achievement.name}</p>
+                        <p className="text-xs text-slate-300">{achievement.description}</p>
                         {!isEarned && (
-                          <p className="text-xs mt-1 text-blue-500">Unlock: {achievement.unlockCriteria}</p>
+                          <p className="text-xs mt-1 text-cyan-400">Unlock: {achievement.unlockCriteria}</p>
                         )}
                       </TooltipContent>
                     </Tooltip>
