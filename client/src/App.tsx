@@ -46,11 +46,13 @@ import BlogPage from "@/pages/blog";
 import AdminLoginPage from "@/pages/admin/login";
 import AdminDashboard from "@/pages/admin/dashboard";
 import AdminCourses from "@/pages/admin/courses";
+import AdminUsers from "@/pages/admin/users";
 import CurriculumBuilder from "@/pages/admin/curriculum";
 import LessonEditor from "@/pages/admin/lesson-editor";
 
 // Student dashboard
 import StudentDashboard from "@/pages/dashboard";
+import CoursePlayer from "@/pages/course-player";
 
 function Router() {
   return (
@@ -95,11 +97,12 @@ function Router() {
       <AdminRoute path="/admin/courses" component={AdminCourses}/>
       <AdminRoute path="/admin/courses/:id/curriculum" component={CurriculumBuilder}/>
       <AdminRoute path="/admin/lessons/:id/edit" component={LessonEditor}/>
-      <AdminRoute path="/admin/users" component={AdminDashboard}/>
+      <AdminRoute path="/admin/users" component={AdminUsers}/>
       <AdminRoute path="/admin/enrollments" component={AdminDashboard}/>
       
       {/* Student dashboard */}
       <ProtectedRoute path="/dashboard" component={StudentDashboard}/>
+      <ProtectedRoute path="/course/:courseId/lesson/:lessonId" component={CoursePlayer}/>
       
       <Route component={NotFound} />
     </Switch>

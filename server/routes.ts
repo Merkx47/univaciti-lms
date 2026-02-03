@@ -606,6 +606,71 @@ export async function registerRoutes(
     }
   });
 
+  // Mark lesson as complete
+  app.post("/api/lessons/:lessonId/complete", requireAuth, async (req, res) => {
+    try {
+      const { lessonId } = req.params;
+      const userId = (req.user as any).id;
+
+      // Check if there's existing progress
+      const [existing] = await db.select().from(lessonProgress)
+        .where(and(eq(lessonProgress.userId, userId), eq(lessonProgress.lessonId, Number(lessonId))));
+
+      let progress;
+      if (existing) {
+        [progress] = await db.update(lessonProgress)
+          .set({ status: "completed", progressPercent: 100, completedAt: new Date() })
+          .where(eq(lessonProgress.id, existing.id))
+          .returning();
+      } else {
+        [progress] = await db.insert(lessonProgress)
+          .values({
+            userId,
+            lessonId: Number(lessonId),
+            status: "completed",
+            progressPercent: 100,
+            startedAt: new Date(),
+            completedAt: new Date(),
+          })
+          .returning();
+      }
+
+      // Update enrollment progress
+      const [lesson] = await db.select().from(lessons).where(eq(lessons.id, Number(lessonId)));
+      if (lesson) {
+        const [module] = await db.select().from(modules).where(eq(modules.id, lesson.moduleId));
+        if (module) {
+          const [total] = await db.select({ count: count() }).from(lessons)
+            .innerJoin(modules, eq(lessons.moduleId, modules.id))
+            .where(eq(modules.courseId, module.courseId));
+          
+          const [completed] = await db.select({ count: count() }).from(lessonProgress)
+            .innerJoin(lessons, eq(lessonProgress.lessonId, lessons.id))
+            .innerJoin(modules, eq(lessons.moduleId, modules.id))
+            .where(and(
+              eq(lessonProgress.userId, userId),
+              eq(modules.courseId, module.courseId),
+              eq(lessonProgress.status, "completed")
+            ));
+
+          const progressPct = Math.round((completed.count / total.count) * 100);
+          await db.update(enrollments)
+            .set({ 
+              progress: progressPct,
+              status: progressPct === 100 ? "completed" : "active",
+              completedAt: progressPct === 100 ? new Date() : null,
+            })
+            .where(and(eq(enrollments.userId, userId), eq(enrollments.courseId, module.courseId)));
+        }
+      }
+
+      res.json(progress);
+    } catch (error) {
+      console.error("Mark lesson complete error:", error);
+      res.status(500).json({ error: "Failed to mark lesson complete" });
+    }
+  });
+
   // ==================== QUIZ MANAGEMENT ====================
   app.post("/api/admin/quizzes", requireInstructor, async (req, res) => {
     try {
