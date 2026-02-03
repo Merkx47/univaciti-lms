@@ -6,22 +6,54 @@ import { eq } from "drizzle-orm";
 async function seed() {
   console.log("Seeding database...");
 
-  // Create admin user if not exists
-  const [existingAdmin] = await db.select().from(users).where(eq(users.username, "admin"));
-  
-  if (!existingAdmin) {
-    await db.insert(users).values({
+  // Create test users for all roles
+  const testUsers = [
+    {
       username: "admin",
       email: "admin@univaciti.com",
-      password: await hashPassword("admin123"),
+      password: "admin123",
       firstName: "Admin",
       lastName: "User",
-      role: "admin",
-      isActive: true,
-    });
-    console.log("Created admin user: admin / admin123");
-  } else {
-    console.log("Admin user already exists");
+      role: "admin" as const,
+    },
+    {
+      username: "instructor",
+      email: "instructor@univaciti.com",
+      password: "instructor123",
+      firstName: "Sarah",
+      lastName: "Johnson",
+      role: "instructor" as const,
+    },
+    {
+      username: "student",
+      email: "student@univaciti.com",
+      password: "student123",
+      firstName: "John",
+      lastName: "Smith",
+      role: "student" as const,
+    },
+    {
+      username: "demo",
+      email: "demo@univaciti.com",
+      password: "demo123",
+      firstName: "Demo",
+      lastName: "User",
+      role: "student" as const,
+    },
+  ];
+
+  for (const user of testUsers) {
+    const [existing] = await db.select().from(users).where(eq(users.username, user.username));
+    if (!existing) {
+      await db.insert(users).values({
+        ...user,
+        password: await hashPassword(user.password),
+        isActive: true,
+      });
+      console.log(`Created ${user.role} user: ${user.username} / ${user.password}`);
+    } else {
+      console.log(`${user.role} user already exists: ${user.username}`);
+    }
   }
 
   // Create sample courses for each TESA specialization
