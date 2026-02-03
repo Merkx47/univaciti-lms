@@ -8,25 +8,21 @@ import { MiniSkillLogo } from "@/components/tool-logo";
 const THEME_PRIMARY = "#1E9AD6";
 const THEME_LIGHT = "#3AAFE6";
 
-// Certification Icons
+// Certification Icons - AWS Cloud Icon
 function CloudIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 80 80" className={className} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 52C14 52 10 45 10 38C10 31 15 25 22 25C23 16 32 10 42 10C52 10 60 17 62 26C69 27 74 33 74 41C74 49 68 55 60 55H22"/>
-      <path d="M32 40L40 48L52 36"/>
+    <svg viewBox="0 0 128 128" className={className} fill="currentColor">
+      <path d="M38.089 77.466l-11.4 4.896 10.559 4.514 12.241-4.514-11.4-4.896zm-17.138 6.12l-.382 22.034 16.679 7.345V90.089l-16.297-6.503zm34.276 0l-15.073 5.739V110.9l15.073-6.121V83.586zm17.979-68.551L61.73 19.931l10.635 4.515 12.241-4.515-11.476-4.896zm-15.914 6.503v22.034l14.231 4.132.459-20.046-14.69-6.12zm31.828 1.224L75.66 28.5v21.652l13.466-5.738-.006-22.652zM19.21 46.013l-11.4 4.896 10.559 4.514 12.241-4.514-11.4-4.896zM2.072 52.133l-.382 22.034 16.679 7.345V58.636L2.072 52.133zm34.276 0L21.275 57.87v21.576l15.073-6.12V52.133zm56.679-14.949l-11.399 4.896 10.558 4.515 12.241-4.515-11.4-4.896zm-17.137 6.121l-.383 22.034 16.679 7.344V49.808l-16.296-6.503zm34.275 0l-15.072 5.738v21.576l15.072-6.12V43.305z"/>
     </svg>
   );
 }
 
+// Data Analytics - Python/Pandas style chart icon  
 function ChartIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 80 80" className={className} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="12" y="52" width="10" height="16"/>
-      <rect x="27" y="38" width="10" height="30"/>
-      <rect x="42" y="24" width="10" height="44"/>
-      <rect x="57" y="12" width="10" height="56"/>
-      <path d="M12 22L27 34L47 20L67 8"/>
-      <circle cx="67" cy="8" r="3" fill="currentColor"/>
+    <svg viewBox="0 0 128 128" className={className} fill="currentColor">
+      <path d="M117.106 47.936h-20.073V22.345c0-6.9-5.6-12.5-12.5-12.5H43.467c-6.9 0-12.5 5.6-12.5 12.5v25.591H10.894c-3.314 0-6 2.686-6 6v51.719c0 3.314 2.686 6 6 6h106.212c3.314 0 6-2.686 6-6V53.936c0-3.314-2.686-6-6-6zM42.967 22.345c0-3.586 2.914-6.5 6.5-6.5h41.066c3.586 0 6.5 2.914 6.5 6.5v25.591H42.967V22.345zm68.139 83.31c0 .276-.224.5-.5.5H17.394a.501.501 0 0 1-.5-.5V60.436c0-.276.224-.5.5-.5h93.212c.276 0 .5.224.5.5v45.219z"/>
+      <path d="M32.894 98.155h12v-25h-12zm20 0h12v-35h-12zm20 0h12v-20h-12zm20 0h12v-30h-12z"/>
     </svg>
   );
 }
@@ -43,53 +39,53 @@ function JavaIcon({ className }: { className?: string }) {
   );
 }
 
+// Quality Assurance - Selenium style testing icon
 function QAIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 80 80" className={className} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="40" cy="40" r="24"/>
-      <path d="M28 40L36 48L52 32"/>
+    <svg viewBox="0 0 128 128" className={className} fill="currentColor">
+      <path d="M64 0C28.7 0 0 28.7 0 64s28.7 64 64 64 64-28.7 64-64S99.3 0 64 0zm0 118c-29.8 0-54-24.2-54-54S34.2 10 64 10s54 24.2 54 54-24.2 54-54 54z"/>
+      <path d="M87.5 42.5L55 75 40.5 60.5 33 68l22 22 40-47z"/>
     </svg>
   );
 }
 
+// React official atom logo
 function ReactLogoIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 80 80" className={className} fill="none" stroke="currentColor" strokeWidth="2">
-      <ellipse cx="40" cy="40" rx="26" ry="10"/>
-      <ellipse cx="40" cy="40" rx="26" ry="10" transform="rotate(60 40 40)"/>
-      <ellipse cx="40" cy="40" rx="26" ry="10" transform="rotate(-60 40 40)"/>
-      <circle cx="40" cy="40" r="5" fill="currentColor"/>
+    <svg viewBox="0 0 128 128" className={className} fill="currentColor">
+      <path d="M64 81.7c7.8 0 14.3-6.4 14.3-14.3S71.8 53.1 64 53.1 49.7 59.5 49.7 67.4 56.1 81.7 64 81.7z"/>
+      <path d="M107.2 58.9c-1.1-.4-2.2-.8-3.4-1.1 .2-.8 .4-1.6 .6-2.3 3.3-14.3 1.1-25.8-6.2-30-7-4-18.5-.5-30.1 8.5-.8.6-1.6 1.3-2.4 2-.6-.6-1.2-1.1-1.9-1.6C52.3 25.4 40.6 21.3 33.4 25.5c-6.9 4-9 14.8-6.1 28.5.2.9.5 1.9.7 2.8-1.6.5-3.1.9-4.5 1.5-12.5 4.8-20.1 12.6-20.1 21.1 0 8.8 8.3 17.4 21.6 22.3 1.1.4 2.2.8 3.4 1.1-.2.8-.4 1.6-.6 2.3-3.3 14.3-1.1 25.8 6.2 30 1.7 1 3.6 1.4 5.7 1.4 5.6 0 12.7-3.2 20.1-9.1.8-.6 1.6-1.3 2.4-2 .6.6 1.2 1.1 1.9 1.6 7.5 6.2 14.8 9.4 20.5 9.4 2 0 3.9-.4 5.6-1.3 6.9-4 9-14.8 6.1-28.5-.2-.9-.5-1.9-.7-2.8 1.1-.3 2.2-.7 3.2-1.1 13.1-4.9 21.3-13.1 21.3-22C128.1 71.2 119.8 63.5 107.2 58.9zM96.9 32.8c4.6 2.6 6 11.3 3.4 22.6-.2.7-.4 1.5-.6 2.2-4.6-1-9.6-1.7-14.8-2.1-3-4.3-6.2-8.2-9.6-11.7.8-.7 1.5-1.3 2.3-1.9C86.4 35.4 93.5 30.9 96.9 32.8zM84.8 75.3c-1.7 3-3.5 5.9-5.4 8.7-3.4.3-6.9.4-10.4.4s-7-.1-10.4-.4c-1.9-2.8-3.7-5.7-5.4-8.7-1.7-3.1-3.3-6.2-4.7-9.4 1.4-3.2 3-6.3 4.7-9.4 1.7-3 3.5-5.9 5.4-8.7 3.4-.3 6.9-.4 10.4-.4s7 .1 10.4.4c1.9 2.8 3.7 5.7 5.4 8.7 1.7 3.1 3.3 6.2 4.7 9.4C88.1 69 86.5 72.2 84.8 75.3zM91 68.6c1.3 3.1 2.4 6.2 3.4 9.2-3 .7-6.2 1.2-9.5 1.7 1.1-1.8 2.2-3.7 3.2-5.5C89.2 72.2 90.1 70.4 91 68.6zM69 98.2c-2 2.1-4 4.1-6.1 5.9-2.1-1.8-4.1-3.8-6.1-5.9-2-2.2-3.9-4.4-5.6-6.6 3.8.3 7.7.4 11.7.4s7.9-.2 11.7-.4C72.9 93.8 71 96 69 98.2zM42.1 79.5c-3.3-.5-6.5-1-9.5-1.7 1-3 2.1-6 3.4-9.1.9 1.8 1.8 3.5 2.8 5.3C39.9 75.8 41 77.7 42.1 79.5zM36 65.9c-1.3-3.1-2.4-6.2-3.4-9.2 3-.7 6.2-1.2 9.5-1.7-1.1 1.8-2.2 3.7-3.2 5.5C37.8 62.3 36.9 64.1 36 65.9zM58 36.3c2-2.1 4-4.1 6.1-5.9 2.1 1.8 4.1 3.8 6.1 5.9 2 2.2 3.9 4.4 5.6 6.6-3.8-.3-7.7-.4-11.7-.4s-7.9.2-11.7.4C54.1 40.7 56 38.5 58 36.3zM84.9 55c3.3.5 6.5 1 9.5 1.7-1 3-2.1 6-3.4 9.1-.9-1.8-1.8-3.5-2.8-5.3C87.1 58.7 86 56.8 84.9 55zM30.1 32.6c3.5-2 10.8 2.7 19.9 9.4.6.5 1.2 1 1.8 1.5-3.4 3.5-6.6 7.4-9.6 11.7-5.2.4-10.2 1.1-14.8 2.1-.3-1-.5-1.9-.7-2.8C24.2 43 25.6 35.2 30.1 32.6zM26.4 97.7c-10.5-3.9-17-10-17-16.2 0-5.9 5.8-11.6 15.8-15.5 1.2-.5 2.6-.9 4-1.3 1.4 4.7 3.2 9.6 5.4 14.6-2.2 5-4 9.9-5.4 14.5C28.1 98.4 27.2 98 26.4 97.7zM49.8 121c-4.6-2.6-6-11.3-3.4-22.6.2-.7.4-1.5.6-2.2 4.6 1 9.6 1.7 14.8 2.1 3 4.3 6.2 8.2 9.6 11.7-.8.7-1.5 1.3-2.3 1.9C60.3 118.5 53.2 123 49.8 121zM97 101.8c2.6 11.2 1.2 19.7-3.4 22.4-4.7 2.7-13.4-2.4-23.2-10.8-.6-.5-1.2-1-1.8-1.5 3.4-3.5 6.6-7.4 9.6-11.7 5.2-.4 10.2-1.1 14.8-2.1C93.3 99.1 93.5 100 97 101.8zM100.6 97.6c-1.1.4-2.3.7-3.5 1.1-1.4-4.7-3.2-9.6-5.4-14.6 2.2-5 4-9.9 5.4-14.5 1.1.3 2.1.7 3.1 1.1 10.7 3.8 17.3 10.2 17.3 16.4C117.5 93 111.6 94.1 100.6 97.6z"/>
     </svg>
   );
 }
 
+// Solutions Architecture - AWS architecture diagram style
 function ArchitectureIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 80 80" className={className} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="30" y="10" width="20" height="14" rx="2"/>
-      <rect x="10" y="56" width="16" height="14" rx="2"/>
-      <rect x="32" y="56" width="16" height="14" rx="2"/>
-      <rect x="54" y="56" width="16" height="14" rx="2"/>
-      <path d="M40 24V40"/>
-      <path d="M18 56V46H62V56"/>
-      <path d="M40 40V56"/>
+    <svg viewBox="0 0 128 128" className={className} fill="currentColor">
+      <path d="M64 8L8 40v48l56 32 56-32V40L64 8zm0 10.5L108.5 44 64 69.5 19.5 44 64 18.5zM16 50.5l44 25.1V113L16 87.9V50.5zm52 62.5V75.6l44-25.1V87.9L68 113z"/>
+      <circle cx="64" cy="44" r="8"/>
+      <circle cx="32" cy="72" r="6"/>
+      <circle cx="96" cy="72" r="6"/>
+      <circle cx="64" cy="96" r="6"/>
     </svg>
   );
 }
 
+// AI & Machine Learning - Brain/Neural Network icon
 function RobotIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 80 80" className={className} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="18" y="28" width="44" height="36" rx="4"/>
-      <rect x="24" y="36" width="10" height="8" rx="2"/>
-      <rect x="46" y="36" width="10" height="8" rx="2"/>
-      <path d="M32 54H48"/>
-      <path d="M40 12V28"/>
-      <circle cx="40" cy="12" r="4"/>
-      <path d="M12 42H18"/>
-      <path d="M62 42H68"/>
-      <path d="M28 64V70"/>
-      <path d="M52 64V70"/>
+    <svg viewBox="0 0 128 128" className={className} fill="currentColor">
+      <path d="M64 8C33.1 8 8 33.1 8 64s25.1 56 56 56 56-25.1 56-56S94.9 8 64 8zm0 104c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48z"/>
+      <circle cx="44" cy="52" r="8"/>
+      <circle cx="84" cy="52" r="8"/>
+      <circle cx="64" cy="72" r="10"/>
+      <path d="M44 52l20 20m20-20L64 72"/>
+      <path d="M64 32v20m-24 8l12 12m36-12l-12 12"/>
+      <circle cx="64" cy="32" r="6"/>
+      <circle cx="40" cy="60" r="4"/>
+      <circle cx="88" cy="60" r="4"/>
+      <path d="M48 88c0 8.8 7.2 16 16 16s16-7.2 16-16"/>
     </svg>
   );
 }
