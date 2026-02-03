@@ -50,6 +50,7 @@ import AdminUsers from "@/pages/admin/users";
 import AdminEnrollments from "@/pages/admin/enrollments";
 import CurriculumBuilder from "@/pages/admin/curriculum";
 import LessonEditor from "@/pages/admin/lesson-editor";
+import CourseEditor from "@/pages/admin/course-editor";
 
 // Student dashboard
 import StudentDashboard from "@/pages/dashboard";
@@ -98,8 +99,10 @@ function Router() {
       {/* Admin routes */}
       <Route path="/admin/login" component={AdminLoginPage}/>
       <AdminRoute path="/admin/dashboard" component={AdminDashboard}/>
-      <AdminRoute path="/admin/courses" component={AdminCourses}/>
+      <AdminRoute path="/admin/courses/new" component={CourseEditor}/>
       <AdminRoute path="/admin/courses/:id/curriculum" component={CurriculumBuilder}/>
+      <AdminRoute path="/admin/courses/:id" component={CourseEditor}/>
+      <AdminRoute path="/admin/courses" component={AdminCourses}/>
       <AdminRoute path="/admin/lessons/:id/edit" component={LessonEditor}/>
       <AdminRoute path="/admin/users" component={AdminUsers}/>
       <AdminRoute path="/admin/enrollments" component={AdminEnrollments}/>

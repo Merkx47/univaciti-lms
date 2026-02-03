@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/use-auth";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { mockCourses } from "@/lib/mock-data";
 import {
   LayoutDashboard, BookOpen, Users, GraduationCap, Settings,
   Bell, LogOut, Menu, X, Plus, Search, Sun, Moon, Edit,
@@ -51,18 +50,14 @@ export default function AdminCourses() {
   const { theme, setTheme } = useTheme();
   const isDark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
-  const { data: courses, isLoading } = useQuery<any[]>({
-    queryKey: ["/api/courses"],
-  });
+  const courses = mockCourses;
+  const isLoading = false;
 
-  const deleteMutation = useMutation({
-    mutationFn: async (id: number) => {
-      await apiRequest("DELETE", `/api/admin/courses/${id}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/courses"] });
-    },
-  });
+  const handleDelete = (id: number) => {
+    if (confirm("Are you sure you want to delete this course?")) {
+      alert("Course deletion simulated. In production, this would remove the course from the database.");
+    }
+  };
 
   const handleLogout = async () => {
     await logoutMutation.mutateAsync();
@@ -255,11 +250,7 @@ export default function AdminCourses() {
                         size="sm"
                         variant="ghost"
                         className="text-red-600 hover:bg-red-50"
-                        onClick={() => {
-                          if (confirm("Are you sure you want to delete this course?")) {
-                            deleteMutation.mutate(course.id);
-                          }
-                        }}
+                        onClick={() => handleDelete(course.id)}
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>

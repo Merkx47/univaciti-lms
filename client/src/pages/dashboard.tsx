@@ -186,7 +186,7 @@ export default function StudentDashboard() {
                         }}
                       />
                     </div>
-                    <Link href={`/learn/${item.course.id}`}>
+                    <Link href={`/course/${item.course.id}/lesson/${item.currentLessonId || 1}`}>
                       <Button className="w-full mt-4 text-white" style={{ backgroundColor: THEME_PRIMARY }}>
                         Continue Learning
                         <ChevronRight className="w-4 h-4 ml-1" />
@@ -244,24 +244,30 @@ export default function StudentDashboard() {
             </Link>
           </div>
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
-            <div className="flex items-center justify-center gap-4 text-center">
-              <div className="flex-1 p-4">
-                <div className="w-16 h-16 rounded-full mx-auto mb-2 bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center text-white font-bold text-xl">
-                  2
+            <div className="flex items-end justify-center gap-4 text-center">
+              <div className="flex-1 p-4 flex flex-col items-center">
+                <div className="h-24 flex items-end justify-center mb-3">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center text-white font-bold text-xl">
+                    2
+                  </div>
                 </div>
                 <p className="font-medium">Runner Up</p>
                 <p className="text-sm text-muted-foreground">8,500 pts</p>
               </div>
-              <div className="flex-1 p-4">
-                <div className="w-20 h-20 rounded-full mx-auto mb-2 bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center text-white font-bold text-2xl">
-                  1
+              <div className="flex-1 p-4 flex flex-col items-center">
+                <div className="h-24 flex items-end justify-center mb-3">
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center text-white font-bold text-2xl">
+                    1
+                  </div>
                 </div>
                 <p className="font-medium">Champion</p>
                 <p className="text-sm text-muted-foreground">12,350 pts</p>
               </div>
-              <div className="flex-1 p-4">
-                <div className="w-16 h-16 rounded-full mx-auto mb-2 bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center text-white font-bold text-xl">
-                  3
+              <div className="flex-1 p-4 flex flex-col items-center">
+                <div className="h-24 flex items-end justify-center mb-3">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center text-white font-bold text-xl">
+                    3
+                  </div>
                 </div>
                 <p className="font-medium">Third Place</p>
                 <p className="text-sm text-muted-foreground">7,200 pts</p>

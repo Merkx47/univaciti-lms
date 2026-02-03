@@ -188,7 +188,7 @@ export default function CoursesPage() {
                   </div>
                 </div>
 
-                <Link href={`/learn/${course.id}`}>
+                <Link href={`/course/${course.id}/lesson/1`}>
                   <Button 
                     className="w-full text-white" 
                     style={{ backgroundColor: THEME_PRIMARY }}
