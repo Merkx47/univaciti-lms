@@ -106,24 +106,6 @@ export default function Register() {
     <div className="min-h-screen flex">
       <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 xl:px-24 bg-background">
         <div className="w-full max-w-md mx-auto">
-          <div className="flex items-center gap-2 mb-6">
-            <button
-              onClick={() => window.history.back()}
-              className="inline-flex items-center gap-2 p-2 rounded-lg bg-slate-100 dark:bg-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
-              title="Go back"
-            >
-              <ArrowLeft className="w-5 h-5 text-slate-600 dark:text-slate-300" />
-              <span className="text-sm text-slate-600 dark:text-slate-300">Back</span>
-            </button>
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => setTheme(isDark ? "light" : "dark")}
-              className="text-slate-600 dark:text-slate-300"
-            >
-              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </Button>
-          </div>
           <Link href="/" className="inline-block mb-8">
             <img src={logoUrl} alt="Univaciti" className="h-12 rounded-full" data-testid="img-logo" />
           </Link>
