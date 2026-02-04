@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useParams, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -8,9 +8,11 @@ import {
   ArrowLeft, ChevronLeft, ChevronRight, Check, Play, Pause,
   BookOpen, Clock, Trophy, Menu, X, CheckCircle, Circle,
   FileText, Video, Code, HelpCircle, Lock, Volume2, VolumeX,
-  Maximize, Settings, SkipForward
+  Maximize, Settings, SkipForward, Copy, Terminal, Layers
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { InteractiveTerminal, getCommandsForSpecialization } from "@/components/InteractiveTerminal";
+import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 
 const THEME_PRIMARY = "#1E9AD6";
 
@@ -117,6 +119,46 @@ export default function CoursePlayer() {
   const totalLessons = allLessons.length;
   const progressPercent = totalLessons > 0 ? (completedCount / totalLessons) * 100 : 0;
 
+  // Copy to clipboard function
+  const copyToClipboard = async (text: string, buttonEl: HTMLButtonElement) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      const originalText = buttonEl.innerHTML;
+      buttonEl.innerHTML = '<span class="flex items-center gap-1 text-green-400"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Copied!</span>';
+      setTimeout(() => {
+        buttonEl.innerHTML = originalText;
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
+  // Add copy buttons to code blocks after render
+  useEffect(() => {
+    const codeBlocks = document.querySelectorAll('.lesson-content pre');
+    codeBlocks.forEach((pre) => {
+      if (pre.querySelector('.copy-button')) return; // Already has button
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'relative group';
+      pre.parentNode?.insertBefore(wrapper, pre);
+      wrapper.appendChild(pre);
+
+      const button = document.createElement('button');
+      button.className = 'copy-button absolute top-2 right-2 px-2 py-1 text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 rounded opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1';
+      button.innerHTML = '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>Copy';
+      button.onclick = () => {
+        const code = pre.querySelector('code')?.textContent || pre.textContent || '';
+        copyToClipboard(code, button);
+      };
+      wrapper.appendChild(button);
+    });
+  }, [lesson]);
+
+  // Determine if we should show interactive terminal
+  const showTerminal = lesson?.type === 'code' && course?.specialization;
+  const showArchitectureDiagram = course?.specialization === 'solutions-architecture' && lesson?.type === 'code';
+
   const renderContent = () => {
     if (!lesson) return null;
 
@@ -179,10 +221,41 @@ export default function CoursePlayer() {
     // Handle text and code lessons - content is HTML string
     if (lesson.content) {
       return (
-        <div
-          className="prose prose-slate dark:prose-invert max-w-none prose-headings:text-slate-900 dark:prose-headings:text-white prose-pre:bg-slate-900 prose-code:text-green-400 prose-li:marker:text-[#1E9AD6] prose-ul:list-disc prose-ol:list-decimal prose-li:text-slate-700 dark:prose-li:text-slate-300"
-          dangerouslySetInnerHTML={{ __html: lesson.content }}
-        />
+        <div className="space-y-6">
+          {/* Lesson Content with enhanced code blocks */}
+          <div
+            className="lesson-content prose prose-slate dark:prose-invert max-w-none prose-headings:text-slate-900 dark:prose-headings:text-white prose-pre:bg-slate-900 prose-pre:border prose-pre:border-slate-700 prose-pre:rounded-lg prose-code:text-green-400 prose-li:marker:text-[#1E9AD6] prose-ul:list-disc prose-ol:list-decimal prose-li:text-slate-700 dark:prose-li:text-slate-300"
+            dangerouslySetInnerHTML={{ __html: lesson.content }}
+          />
+
+          {/* Interactive Terminal for hands-on lessons */}
+          {showTerminal && (
+            <div className="mt-8 space-y-4">
+              <div className="flex items-center gap-2 text-sm font-medium text-slate-300">
+                <Terminal className="w-4 h-4" style={{ color: THEME_PRIMARY }} />
+                <span>Interactive Terminal - Practice Commands</span>
+              </div>
+              <InteractiveTerminal
+                title={`${course?.title || 'Practice'} Terminal`}
+                availableCommands={getCommandsForSpecialization(course?.specialization)}
+                welcomeMessage={`Welcome to the ${course?.title || 'Univaciti'} practice terminal!\nType 'help' to see available commands for this course.`}
+              />
+            </div>
+          )}
+
+          {/* Architecture Diagram for Solutions Architecture */}
+          {showArchitectureDiagram && (
+            <div className="mt-8 space-y-4">
+              <div className="flex items-center gap-2 text-sm font-medium text-slate-300">
+                <Layers className="w-4 h-4" style={{ color: THEME_PRIMARY }} />
+                <span>Architecture Diagram Builder - Design Your System</span>
+              </div>
+              <ArchitectureDiagram
+                title="System Architecture Canvas"
+              />
+            </div>
+          )}
+        </div>
       );
     }
 
