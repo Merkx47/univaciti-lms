@@ -180,7 +180,7 @@ export default function CoursePlayer() {
     if (lesson.content) {
       return (
         <div
-          className="prose prose-slate dark:prose-invert max-w-none prose-headings:text-slate-900 dark:prose-headings:text-white prose-pre:bg-slate-900 prose-code:text-green-400"
+          className="prose prose-slate dark:prose-invert max-w-none prose-headings:text-slate-900 dark:prose-headings:text-white prose-pre:bg-slate-900 prose-code:text-green-400 prose-li:marker:text-[#1E9AD6] prose-ul:list-disc prose-ol:list-decimal prose-li:text-slate-700 dark:prose-li:text-slate-300"
           dangerouslySetInnerHTML={{ __html: lesson.content }}
         />
       );
