@@ -209,7 +209,7 @@ export default function CoursesPage() {
                   </div>
                 </div>
 
-                <Link href={`/course/${course.id}/lesson/1`}>
+                <Link href={`/course/${course.id}/lesson/${course.id * 1000 + 1}`}>
                   <Button
                     className="w-full text-white"
                     style={{ backgroundColor: THEME_PRIMARY }}

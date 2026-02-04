@@ -528,14 +528,16 @@ export const mockCourses = [
   },
 ];
 
+// Note: Lesson IDs are generated as: courseId * 1000 + (moduleIndex * 10) + lessonIndex + 1
+// So for course 4, module 0, lesson 0: 4 * 1000 + 0 * 10 + 1 = 4001
 export const mockEnrollments = [
   {
     id: 1,
     courseId: 4,
     course: mockCourses[3],
     progress: 65,
-    currentModuleId: 3,
-    currentLessonId: 2,
+    currentModuleId: 403, // Module 3 of course 4
+    currentLessonId: 4021, // Lesson 1 of module 3 (4 * 1000 + 2 * 10 + 1)
     enrolledAt: "2026-01-15T10:00:00Z",
     lastAccessedAt: "2026-02-03T09:30:00Z",
   },
@@ -544,8 +546,8 @@ export const mockEnrollments = [
     courseId: 2,
     course: mockCourses[1],
     progress: 42,
-    currentModuleId: 2,
-    currentLessonId: 4,
+    currentModuleId: 202, // Module 2 of course 2
+    currentLessonId: 2011, // Lesson 1 of module 2 (2 * 1000 + 1 * 10 + 1)
     enrolledAt: "2026-01-20T14:00:00Z",
     lastAccessedAt: "2026-02-02T16:45:00Z",
   },
@@ -554,8 +556,8 @@ export const mockEnrollments = [
     courseId: 1,
     course: mockCourses[0],
     progress: 25,
-    currentModuleId: 1,
-    currentLessonId: 6,
+    currentModuleId: 101, // Module 1 of course 1
+    currentLessonId: 1001, // First lesson of course 1
     enrolledAt: "2026-01-28T11:00:00Z",
     lastAccessedAt: "2026-02-01T20:15:00Z",
   },
