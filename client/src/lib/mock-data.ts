@@ -731,12 +731,45 @@ export const mockUsers = generateMockUsers();
 
 // Generate 250+ enrollments with realistic data
 const generateMockEnrollments = () => {
-  const enrollments = [];
+  const enrollments: any[] = [];
   const statuses = ["active", "active", "active", "completed", "pending", "expired"]; // weighted towards active
   const startId = 4 + nigerianInstructors.length; // First student ID (after admin, instructor shortcut, student shortcut, and all instructors)
 
-  // Each student enrolls in 1-3 courses
   let enrollmentId = 1;
+
+  // ========== ADD DEMO STUDENT ENROLLMENTS (User ID 3 = "student") ==========
+  const demoStudentId = 3;
+  const demoStudent = mockUsers.find(u => u.id === demoStudentId);
+  if (demoStudent) {
+    // Enroll demo student in 3 courses with varied progress
+    const demoEnrollments = [
+      { courseIndex: 0, progress: 65, status: "active" },   // AWS Cloud Engineering
+      { courseIndex: 1, progress: 42, status: "active" },   // Data Analytics
+      { courseIndex: 3, progress: 25, status: "active" },   // React Development
+    ];
+
+    demoEnrollments.forEach((demo) => {
+      const course = mockCourses[demo.courseIndex];
+      if (course) {
+        enrollments.push({
+          id: enrollmentId++,
+          userId: demoStudentId,
+          courseId: course.id,
+          user: demoStudent,
+          course: course,
+          status: demo.status,
+          progress: demo.progress,
+          // First lesson of the course: courseId * 1000 + 1
+          currentLessonId: course.id * 1000 + 1,
+          enrolledAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days ago
+          lastAccessedAt: new Date().toISOString(),
+        });
+      }
+    });
+  }
+
+  // ========== GENERATE ENROLLMENTS FOR OTHER STUDENTS ==========
+  // Each student enrolls in 1-3 courses
   for (let studentIndex = 0; studentIndex < 120; studentIndex++) {
     const studentUserId = startId + studentIndex;
     const student = mockUsers.find(u => u.id === studentUserId);

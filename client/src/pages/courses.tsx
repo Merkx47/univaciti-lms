@@ -155,9 +155,9 @@ export default function CoursesPage() {
           {paginatedCourses.map((course) => (
             <div
               key={course.id}
-              className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-lg transition-shadow group"
+              className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-lg transition-shadow group flex flex-col h-full"
             >
-              <div className="h-36 bg-gradient-to-br from-blue-400 to-cyan-500 relative">
+              <div className="h-36 bg-gradient-to-br from-blue-400 to-cyan-500 relative flex-shrink-0">
                 <div className="absolute inset-0 flex items-center justify-center gap-3 p-4">
                   {(course.technologies || []).slice(0, 4).map((tech) => (
                     techLogos[tech] && (
@@ -180,7 +180,7 @@ export default function CoursesPage() {
                 )}
               </div>
 
-              <div className="p-5">
+              <div className="p-5 flex flex-col flex-grow">
                 <div className="flex items-center gap-2 mb-2">
                   <span
                     className="text-xs px-2 py-0.5 rounded-full font-medium"
@@ -193,8 +193,8 @@ export default function CoursesPage() {
                   </span>
                 </div>
 
-                <h3 className="font-semibold mb-2 line-clamp-2">{course.title}</h3>
-                <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                <h3 className="font-semibold mb-2 line-clamp-2 min-h-[3rem]">{course.title}</h3>
+                <p className="text-sm text-muted-foreground mb-4 line-clamp-2 min-h-[2.5rem]">
                   {course.shortDescription || course.description}
                 </p>
 
@@ -209,14 +209,16 @@ export default function CoursesPage() {
                   </div>
                 </div>
 
-                <Link href={`/course/${course.id}/lesson/${course.id * 1000 + 1}`}>
-                  <Button
-                    className="w-full text-white"
-                    style={{ backgroundColor: THEME_PRIMARY }}
-                  >
-                    View Course
-                  </Button>
-                </Link>
+                <div className="mt-auto">
+                  <Link href={`/course/${course.id}/lesson/${course.id * 1000 + 1}`}>
+                    <Button
+                      className="w-full text-white"
+                      style={{ backgroundColor: THEME_PRIMARY }}
+                    >
+                      View Course
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
           ))}

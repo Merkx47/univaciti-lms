@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
@@ -8,7 +9,8 @@ import {
 } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import logoUrl from "@assets/logo_1769031259580.png";
-import { mockEnrollments, mockUserStats, techLogos, allAchievements } from "@/lib/mock-data";
+import { mockUserStats, techLogos, allAchievements } from "@/lib/mock-data";
+import { mockStore, useMockStore } from "@/lib/mock-store";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const THEME_PRIMARY = "#1E9AD6";
@@ -34,8 +36,10 @@ export default function StudentDashboard() {
   const [, setLocation] = useLocation();
   const { theme, setTheme } = useTheme();
   const isDark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const store = useMockStore();
 
-  const enrollments = mockEnrollments;
+  // Get enrollments from mock store for current user
+  const enrollments = mockStore.getMyEnrollments();
   const stats = mockUserStats;
 
   const handleLogout = async () => {
@@ -160,11 +164,11 @@ export default function StudentDashboard() {
               {enrollments.map((item: any) => (
                 <div
                   key={item.id}
-                  className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-lg transition-shadow group"
+                  className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-lg transition-shadow group flex flex-col h-full"
                 >
-                  <div className="h-32 bg-gradient-to-br from-blue-400 to-cyan-500 relative">
+                  <div className="h-32 bg-gradient-to-br from-blue-400 to-cyan-500 relative flex-shrink-0">
                     <div className="absolute inset-0 flex items-center justify-center gap-2 p-4">
-                      {(item.course.technologies as string[])?.slice(0, 4).map((tech: string) => (
+                      {(item.course?.technologies as string[])?.slice(0, 4).map((tech: string) => (
                         techLogos[tech] && (
                           <img
                             key={tech}
@@ -181,15 +185,15 @@ export default function StudentDashboard() {
                       </div>
                     </button>
                   </div>
-                  <div className="p-5">
-                    <h3 className="font-semibold mb-1 line-clamp-1">{item.course.title}</h3>
-                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                      {item.course.shortDescription}
+                  <div className="p-5 flex flex-col flex-grow">
+                    <h3 className="font-semibold mb-1 line-clamp-1 min-h-[1.5rem]">{item.course?.title}</h3>
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2 min-h-[2.5rem]">
+                      {item.course?.shortDescription || item.course?.description}
                     </p>
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Clock className="w-4 h-4" />
-                        <span>{item.course.duration}h</span>
+                        <span>{item.course?.duration || 0}h</span>
                       </div>
                       <span className="text-sm font-medium" style={{ color: THEME_PRIMARY }}>
                         {item.progress}% Complete
@@ -204,12 +208,14 @@ export default function StudentDashboard() {
                         }}
                       />
                     </div>
-                    <Link href={`/course/${item.course.id}/lesson/${item.currentLessonId || 1}`}>
-                      <Button className="w-full mt-4 text-white" style={{ backgroundColor: THEME_PRIMARY }}>
-                        Continue Learning
-                        <ChevronRight className="w-4 h-4 ml-1" />
-                      </Button>
-                    </Link>
+                    <div className="mt-auto pt-4">
+                      <Link href={`/course/${item.courseId}/lesson/${item.currentLessonId}`}>
+                        <Button className="w-full text-white" style={{ backgroundColor: THEME_PRIMARY }}>
+                          Continue Learning
+                          <ChevronRight className="w-4 h-4 ml-1" />
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               ))}

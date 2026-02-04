@@ -55,6 +55,8 @@ export interface Enrollment {
   status: string;
   progress: number;
   enrolledAt: string;
+  currentLessonId?: number;
+  lastAccessedAt?: string;
 }
 
 // Initialize store from localStorage or use defaults
@@ -341,6 +343,41 @@ class MockStore {
     saveToStorage(STORAGE_KEYS.ENROLLMENTS, this.enrollments);
     this.notifyListeners();
     return true;
+  }
+
+  // Get enrollments for the current logged-in user
+  getMyEnrollments(): (Enrollment & { currentLessonId: number })[] {
+    if (!this.currentUser) return [];
+
+    return this.enrollments
+      .filter(e => e.userId === this.currentUser!.id)
+      .map(e => {
+        const course = this.getCourseById(e.courseId);
+        // Get actual first lesson ID or calculate it
+        const firstLessonId = this.getFirstLessonId(e.courseId);
+
+        return {
+          ...e,
+          course: course || e.course,
+          currentLessonId: e.currentLessonId || firstLessonId,
+        };
+      });
+  }
+
+  // Get the first lesson ID for a course
+  getFirstLessonId(courseId: number): number {
+    const modules = this.getModulesForCourse(courseId);
+    if (modules.length > 0 && modules[0].lessons.length > 0) {
+      return modules[0].lessons[0].id;
+    }
+    // Fallback to calculated ID
+    return courseId * 1000 + 1;
+  }
+
+  // Enroll current user in a course
+  enrollCurrentUser(courseId: number): Enrollment | null {
+    if (!this.currentUser) return null;
+    return this.addEnrollment(this.currentUser.id, courseId);
   }
 
   // ==================== MODULES ====================
