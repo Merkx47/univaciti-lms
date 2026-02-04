@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link, useParams, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/use-auth";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { mockStore, useMockStore } from "@/lib/mock-store";
 import {
   ArrowLeft, ChevronLeft, ChevronRight, Check, Play, Pause,
   BookOpen, Clock, Trophy, Menu, X, CheckCircle, Circle,
@@ -14,6 +13,9 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 const THEME_PRIMARY = "#1E9AD6";
+
+// LocalStorage key for completed lessons
+const COMPLETED_LESSONS_KEY = 'univaciti_completed_lessons';
 
 const lessonTypeIcons: Record<string, any> = {
   text: FileText,
@@ -52,42 +54,57 @@ interface ContentBlock {
   variant?: string;
 }
 
+// Helper to get/set completed lessons from localStorage
+function getCompletedLessonsFromStorage(): Set<number> {
+  try {
+    const stored = localStorage.getItem(COMPLETED_LESSONS_KEY);
+    if (stored) {
+      return new Set(JSON.parse(stored));
+    }
+  } catch (e) {
+    console.warn('Failed to load completed lessons:', e);
+  }
+  return new Set();
+}
+
+function saveCompletedLessonsToStorage(completed: Set<number>): void {
+  try {
+    localStorage.setItem(COMPLETED_LESSONS_KEY, JSON.stringify([...completed]));
+  } catch (e) {
+    console.warn('Failed to save completed lessons:', e);
+  }
+}
+
 export default function CoursePlayer() {
   const { courseId, lessonId } = useParams<{ courseId: string; lessonId: string }>();
   const [, setLocation] = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
+  const store = useMockStore();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [videoProgress, setVideoProgress] = useState(0);
   const [completedLessons, setCompletedLessons] = useState<Set<number>>(new Set());
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { data: course, isLoading: courseLoading } = useQuery<any>({
-    queryKey: [`/api/courses/${courseId}`],
-    enabled: !!courseId,
-  });
+  // Get course with modules from mock store
+  const course = courseId ? mockStore.getCourseWithModules(Number(courseId)) : null;
 
-  const { data: lesson, isLoading: lessonLoading } = useQuery<any>({
-    queryKey: [`/api/lessons/${lessonId}`],
-    enabled: !!lessonId,
-  });
+  // Get lesson from mock store
+  const lesson = lessonId ? mockStore.getLesson(Number(lessonId)) : null;
 
-  const { data: enrollmentData } = useQuery<any>({
-    queryKey: [`/api/enrollments/${courseId}/progress`],
-    enabled: !!courseId && !!user,
-  });
+  // Load completed lessons from localStorage on mount
+  useEffect(() => {
+    setCompletedLessons(getCompletedLessonsFromStorage());
+    setIsLoading(false);
+  }, []);
 
-  const markCompleteMutation = useMutation({
-    mutationFn: async () => {
-      const res = await apiRequest("POST", `/api/lessons/${lessonId}/complete`, {});
-      return res.json();
-    },
-    onSuccess: () => {
-      setCompletedLessons(prev => new Set([...Array.from(prev), Number(lessonId)]));
-      queryClient.invalidateQueries({ queryKey: [`/api/enrollments/${courseId}/progress`] });
-      toast({ title: "Lesson completed!", description: "Great job! Keep going." });
-    },
-  });
+  const handleMarkComplete = () => {
+    const newCompleted = new Set([...completedLessons, Number(lessonId)]);
+    setCompletedLessons(newCompleted);
+    saveCompletedLessonsToStorage(newCompleted);
+    toast({ title: "Lesson completed!", description: "Great job! Keep going." });
+  };
 
   // Get all lessons flattened
   const allLessons: Lesson[] = course?.modules?.flatMap((m: Module) => m.lessons) || [];
@@ -100,17 +117,10 @@ export default function CoursePlayer() {
   const totalLessons = allLessons.length;
   const progressPercent = totalLessons > 0 ? (completedCount / totalLessons) * 100 : 0;
 
-  useEffect(() => {
-    if (enrollmentData?.completedLessons) {
-      setCompletedLessons(new Set(enrollmentData.completedLessons));
-    }
-  }, [enrollmentData]);
-
   const renderContent = () => {
     if (!lesson) return null;
 
-    const blocks: ContentBlock[] = lesson.content?.blocks || [];
-
+    // Handle video lessons
     if (lesson.type === 'video' && lesson.videoUrl) {
       return (
         <div className="space-y-6">
@@ -123,7 +133,7 @@ export default function CoursePlayer() {
               allowFullScreen
             />
           </div>
-          
+
           {/* Video Controls Info */}
           <div className="flex items-center justify-between text-sm text-muted-foreground">
             <div className="flex items-center gap-4">
@@ -131,21 +141,57 @@ export default function CoursePlayer() {
               <span>{lesson.estimatedMinutes} minutes</span>
             </div>
           </div>
-
-          {/* Additional Content */}
-          {blocks.length > 0 && (
-            <div className="mt-8 space-y-6">
-              <h3 className="text-lg font-bold">Lesson Notes</h3>
-              {blocks.map(block => renderBlock(block))}
-            </div>
-          )}
         </div>
       );
     }
 
+    // Handle quiz lessons
+    if (lesson.type === 'quiz') {
+      try {
+        const questions = JSON.parse(lesson.content || '[]');
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">Module Quiz</h2>
+            <p className="text-muted-foreground">Test your knowledge with this quiz.</p>
+            {questions.map((q: any, idx: number) => (
+              <div key={q.id || idx} className="p-6 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+                <p className="font-medium mb-4">Q{idx + 1}: {q.question}</p>
+                <div className="space-y-2">
+                  {q.options?.map((opt: string, optIdx: number) => (
+                    <label key={optIdx} className="flex items-center gap-3 p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer">
+                      <input type="radio" name={`question-${q.id || idx}`} className="w-4 h-4" />
+                      <span>{opt}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
+            <Button className="text-white" style={{ backgroundColor: THEME_PRIMARY }}>
+              Submit Quiz
+            </Button>
+          </div>
+        );
+      } catch (e) {
+        return <p className="text-muted-foreground">Quiz content unavailable.</p>;
+      }
+    }
+
+    // Handle text and code lessons - content is HTML string
+    if (lesson.content) {
+      return (
+        <div
+          className="prose prose-slate dark:prose-invert max-w-none prose-headings:text-slate-900 dark:prose-headings:text-white prose-pre:bg-slate-900 prose-code:text-green-400"
+          dangerouslySetInnerHTML={{ __html: lesson.content }}
+        />
+      );
+    }
+
+    // Fallback for empty content
     return (
-      <div className="prose prose-slate dark:prose-invert max-w-none">
-        {blocks.map(block => renderBlock(block))}
+      <div className="text-center py-12">
+        <BookOpen className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+        <h3 className="text-lg font-medium mb-2">No content yet</h3>
+        <p className="text-muted-foreground">This lesson's content is being prepared.</p>
       </div>
     );
   };
@@ -238,10 +284,24 @@ export default function CoursePlayer() {
     }
   };
 
-  if (courseLoading || lessonLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
+      </div>
+    );
+  }
+
+  if (!course || !lesson) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+        <div className="text-center">
+          <h2 className="text-xl font-bold mb-2">Lesson not found</h2>
+          <p className="text-muted-foreground mb-4">The lesson you're looking for doesn't exist.</p>
+          <Link href="/dashboard">
+            <Button>Back to Dashboard</Button>
+          </Link>
+        </div>
       </div>
     );
   }
@@ -336,8 +396,7 @@ export default function CoursePlayer() {
             <div className="flex items-center gap-3">
               {!completedLessons.has(Number(lessonId)) && (
                 <Button
-                  onClick={() => markCompleteMutation.mutate()}
-                  disabled={markCompleteMutation.isPending}
+                  onClick={handleMarkComplete}
                   className="text-white"
                   style={{ backgroundColor: THEME_PRIMARY }}
                 >
