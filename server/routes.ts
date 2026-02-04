@@ -12,7 +12,6 @@ import {
 } from "@shared/schema";
 import { eq, and, desc, asc, sql, count, like, or } from "drizzle-orm";
 import { randomBytes } from "crypto";
-import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
 import * as XLSX from "xlsx";
 import mammoth from "mammoth";
 
@@ -1136,9 +1135,6 @@ export async function registerRoutes(
       res.status(500).json({ error: "Failed to create announcement" });
     }
   });
-
-  // ==================== OBJECT STORAGE ====================
-  registerObjectStorageRoutes(app);
 
   // ==================== FILE TEMPLATES ====================
   app.get("/api/templates/quiz-questions.xlsx", (req, res) => {
