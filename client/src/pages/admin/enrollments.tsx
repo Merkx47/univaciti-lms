@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/use-auth";
+import { Pagination } from "@/components/Pagination";
 import logoUrl from "@assets/logo_1769031259580.png";
-import { mockUsers, mockCourses, mockAdminEnrollments } from "@/lib/mock-data";
+import { mockStore, Enrollment, User, Course } from "@/lib/mock-store";
 
 const THEME_PRIMARY = "#1E9AD6";
 
@@ -20,20 +21,60 @@ export default function AdminEnrollments() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
-  const [enrollments, setEnrollments] = useState(mockAdminEnrollments);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [showEnrollModal, setShowEnrollModal] = useState(false);
   const [newEnrollment, setNewEnrollment] = useState({
     userId: "",
     courseId: "",
   });
 
+  // Load data from store and subscribe to changes
+  useEffect(() => {
+    setEnrollments(mockStore.getEnrollments());
+    setUsers(mockStore.getUsers());
+    setCourses(mockStore.getCourses());
+    const unsubscribe = mockStore.subscribe(() => {
+      setEnrollments(mockStore.getEnrollments());
+      setUsers(mockStore.getUsers());
+      setCourses(mockStore.getCourses());
+    });
+    return unsubscribe;
+  }, []);
+
   const handleLogout = async () => {
     await logoutMutation.mutateAsync();
     setLocation("/admin/login");
   };
 
-  const students = mockUsers.filter(u => u.role === "student");
+  // Get students for dropdown
+  const students = users.filter(u => u.role === "student");
 
+  const handleEnroll = () => {
+    if (!newEnrollment.userId || !newEnrollment.courseId) return;
+
+    const userId = Number(newEnrollment.userId);
+    const courseId = Number(newEnrollment.courseId);
+
+    try {
+      mockStore.addEnrollment(userId, courseId);
+      setShowEnrollModal(false);
+      setNewEnrollment({ userId: "", courseId: "" });
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Failed to enroll student');
+    }
+  };
+
+  const handleDeleteEnrollment = (id: number) => {
+    if (confirm("Are you sure you want to remove this enrollment?")) {
+      mockStore.deleteEnrollment(id);
+    }
+  };
+
+  // Filter enrollments
   const filteredEnrollments = enrollments.filter((e) => {
     const matchesSearch =
       e.user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -43,35 +84,19 @@ export default function AdminEnrollments() {
     return matchesSearch && matchesStatus;
   });
 
-  const handleEnroll = () => {
-    if (!newEnrollment.userId || !newEnrollment.courseId) return;
-    
-    const selectedUser = mockUsers.find(u => u.id === Number(newEnrollment.userId));
-    const selectedCourse = mockCourses.find(c => c.id === Number(newEnrollment.courseId));
-    
-    if (!selectedUser || !selectedCourse) return;
+  // Pagination logic
+  const totalPages = Math.ceil(filteredEnrollments.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedEnrollments = filteredEnrollments.slice(startIndex, startIndex + itemsPerPage);
 
-    const newId = Math.max(...enrollments.map(e => e.id)) + 1;
-    setEnrollments([...enrollments, {
-      id: newId,
-      userId: Number(newEnrollment.userId),
-      courseId: Number(newEnrollment.courseId),
-      user: selectedUser,
-      course: selectedCourse,
-      status: "active",
-      progress: 0,
-      enrolledAt: new Date().toISOString(),
-    }]);
-    setShowEnrollModal(false);
-    setNewEnrollment({ userId: "", courseId: "" });
-    alert("Student enrolled successfully!");
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
   };
 
-  const handleDeleteEnrollment = (id: number) => {
-    if (confirm("Are you sure you want to remove this enrollment?")) {
-      setEnrollments(enrollments.filter(e => e.id !== id));
-      alert("Enrollment removed successfully!");
-    }
+  const handleFilterChange = (value: string) => {
+    setFilterStatus(value);
+    setCurrentPage(1);
   };
 
   return (
@@ -87,7 +112,7 @@ export default function AdminEnrollments() {
                 <span className="text-xs block text-muted-foreground">Admin Portal</span>
               </div>
             </div>
-            
+
             <nav className="flex items-center gap-6">
               <Link href="/admin/dashboard">
                 <span className="text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">Dashboard</span>
@@ -120,7 +145,7 @@ export default function AdminEnrollments() {
             <h1 className="text-2xl font-bold mb-1">Enrollments</h1>
             <p className="text-muted-foreground">Track and manage student course enrollments</p>
           </div>
-          <Button 
+          <Button
             onClick={() => setShowEnrollModal(true)}
             className="text-white"
             style={{ backgroundColor: THEME_PRIMARY }}
@@ -146,7 +171,7 @@ export default function AdminEnrollments() {
           <div className="bg-white dark:bg-slate-800 rounded-lg p-4 border border-slate-200 dark:border-slate-700">
             <p className="text-sm text-muted-foreground">Avg Progress</p>
             <p className="text-2xl font-bold">
-              {Math.round(enrollments.reduce((acc, e) => acc + e.progress, 0) / enrollments.length)}%
+              {enrollments.length > 0 ? Math.round(enrollments.reduce((acc, e) => acc + e.progress, 0) / enrollments.length) : 0}%
             </p>
           </div>
         </div>
@@ -156,12 +181,12 @@ export default function AdminEnrollments() {
           <Input
             placeholder="Search by student or course..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             className="max-w-sm"
           />
           <select
             value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
+            onChange={(e) => handleFilterChange(e.target.value)}
             className="px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg text-sm"
           >
             <option value="">All Status</option>
@@ -173,7 +198,7 @@ export default function AdminEnrollments() {
         </div>
 
         {/* Enrollments Table */}
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
           <table className="w-full">
             <thead>
               <tr className="text-left text-sm text-muted-foreground border-b border-slate-200 dark:border-slate-700">
@@ -186,7 +211,7 @@ export default function AdminEnrollments() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-              {filteredEnrollments.map((enrollment) => (
+              {paginatedEnrollments.map((enrollment) => (
                 <tr key={enrollment.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
                   <td className="px-6 py-4">
                     <p className="font-medium">{enrollment.user.firstName} {enrollment.user.lastName}</p>
@@ -206,8 +231,8 @@ export default function AdminEnrollments() {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       <div className="w-24 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full rounded-full" 
+                        <div
+                          className="h-full rounded-full"
                           style={{ width: `${enrollment.progress}%`, backgroundColor: THEME_PRIMARY }}
                         />
                       </div>
@@ -218,9 +243,9 @@ export default function AdminEnrollments() {
                     {new Date(enrollment.enrolledAt).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       className="text-red-600 hover:text-red-700"
                       onClick={() => handleDeleteEnrollment(enrollment.id)}
                     >
@@ -231,12 +256,25 @@ export default function AdminEnrollments() {
               ))}
             </tbody>
           </table>
-          
-          {filteredEnrollments.length === 0 && (
+
+          {paginatedEnrollments.length === 0 && (
             <div className="text-center py-12">
               <p className="text-muted-foreground">No enrollments found</p>
             </div>
           )}
+
+          {/* Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={filteredEnrollments.length}
+            itemsPerPage={itemsPerPage}
+            onPageChange={setCurrentPage}
+            onItemsPerPageChange={(newSize) => {
+              setItemsPerPage(newSize);
+              setCurrentPage(1);
+            }}
+          />
         </div>
       </main>
 
@@ -255,7 +293,7 @@ export default function AdminEnrollments() {
                 >
                   <option value="">Choose a student...</option>
                   {students.map(s => (
-                    <option key={s.id} value={s.id}>{s.firstName} {s.lastName}</option>
+                    <option key={s.id} value={s.id}>{s.firstName} {s.lastName} ({s.email})</option>
                   ))}
                 </select>
               </div>
@@ -267,7 +305,7 @@ export default function AdminEnrollments() {
                   className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg"
                 >
                   <option value="">Choose a course...</option>
-                  {mockCourses.map(c => (
+                  {courses.map(c => (
                     <option key={c.id} value={c.id}>{c.title}</option>
                   ))}
                 </select>
@@ -277,8 +315,8 @@ export default function AdminEnrollments() {
               <Button variant="outline" onClick={() => setShowEnrollModal(false)} className="flex-1">
                 Cancel
               </Button>
-              <Button 
-                onClick={handleEnroll} 
+              <Button
+                onClick={handleEnroll}
                 className="flex-1 text-white"
                 style={{ backgroundColor: THEME_PRIMARY }}
               >

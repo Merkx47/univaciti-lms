@@ -1,26 +1,59 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
+import { RefreshCw } from "lucide-react";
 import logoUrl from "@assets/logo_1769031259580.png";
-import { mockCourses, mockEnrollments } from "@/lib/mock-data";
+import { mockStore, Course, User, Enrollment } from "@/lib/mock-store";
 
 const THEME_PRIMARY = "#1E9AD6";
 
 export default function AdminDashboard() {
   const { user, logoutMutation } = useAuth();
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
+
+  // Load data from store and subscribe to changes
+  useEffect(() => {
+    setCourses(mockStore.getCourses());
+    setUsers(mockStore.getUsers());
+    setEnrollments(mockStore.getEnrollments());
+    const unsubscribe = mockStore.subscribe(() => {
+      setCourses(mockStore.getCourses());
+      setUsers(mockStore.getUsers());
+      setEnrollments(mockStore.getEnrollments());
+    });
+    return unsubscribe;
+  }, []);
 
   const handleLogout = async () => {
     await logoutMutation.mutateAsync();
     setLocation("/admin/login");
   };
 
+  const handleResetData = () => {
+    if (confirm("This will reset all data to defaults. Any courses, users, or enrollments you created will be deleted. Continue?")) {
+      mockStore.resetToDefaults();
+      toast({
+        title: "Data Reset",
+        description: "All data has been reset to defaults. Please log in again.",
+      });
+      setLocation("/admin/login");
+    }
+  };
+
+  const completedEnrollments = enrollments.filter(e => e.status === "completed").length;
+  const completionRate = enrollments.length > 0 ? Math.round((completedEnrollments / enrollments.length) * 100) : 0;
+
   const stats = {
-    totalUsers: 1523,
-    totalCourses: mockCourses.length,
-    totalEnrollments: 4892,
-    completionRate: 78,
+    totalUsers: users.length,
+    totalCourses: courses.length,
+    totalEnrollments: enrollments.length,
+    completionRate,
   };
 
   return (
@@ -112,6 +145,16 @@ export default function AdminDashboard() {
                   <span className="text-sm text-muted-foreground block">Track student enrollment data</span>
                 </button>
               </Link>
+              <button
+                onClick={handleResetData}
+                className="w-full text-left px-4 py-3 rounded-lg border border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+              >
+                <span className="font-medium text-red-600 dark:text-red-400 flex items-center gap-2">
+                  <RefreshCw className="w-4 h-4" />
+                  Reset All Data
+                </span>
+                <span className="text-sm text-muted-foreground block">Clear localStorage and restore defaults</span>
+              </button>
             </div>
           </div>
 
@@ -169,7 +212,7 @@ export default function AdminDashboard() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-              {mockCourses.slice(0, 5).map((course) => (
+              {courses.slice(0, 5).map((course) => (
                 <tr key={course.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
                   <td className="px-6 py-4">
                     <p className="font-medium">{course.title}</p>

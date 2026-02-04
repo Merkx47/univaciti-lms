@@ -1,11 +1,5 @@
-import { ReactNode, createContext, useContext } from "react";
-import {
-  useQuery,
-  useMutation,
-  UseMutationResult,
-} from "@tanstack/react-query";
-import type { SelectUser } from "@shared/schema";
-import { getQueryFn, apiRequest, queryClient } from "../lib/queryClient";
+import { ReactNode, createContext, useContext, useState, useEffect, useCallback } from "react";
+import { mockStore, User } from "@/lib/mock-store";
 import { useToast } from "@/hooks/use-toast";
 
 type LoginData = {
@@ -21,117 +15,182 @@ type RegisterData = {
   lastName?: string;
 };
 
+type MutationResult<TData, TError, TVariables> = {
+  mutate: (variables: TVariables) => void;
+  mutateAsync: (variables: TVariables) => Promise<TData>;
+  isPending: boolean;
+  isError: boolean;
+  error: TError | null;
+  data: TData | null;
+};
+
 type AuthContextType = {
-  user: SelectUser | null;
+  user: User | null;
   isLoading: boolean;
   error: Error | null;
-  loginMutation: UseMutationResult<SelectUser, Error, LoginData>;
-  adminLoginMutation: UseMutationResult<SelectUser, Error, LoginData>;
-  logoutMutation: UseMutationResult<void, Error, void>;
-  registerMutation: UseMutationResult<SelectUser, Error, RegisterData>;
+  loginMutation: MutationResult<User, Error, LoginData>;
+  adminLoginMutation: MutationResult<User, Error, LoginData>;
+  logoutMutation: MutationResult<void, Error, void>;
+  registerMutation: MutationResult<User, Error, RegisterData>;
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
+// Helper to create a mutation-like object
+function useMockMutation<TData, TVariables>(
+  mutationFn: (variables: TVariables) => Promise<TData>,
+  options?: {
+    onSuccess?: (data: TData) => void;
+    onError?: (error: Error) => void;
+  }
+): MutationResult<TData, Error, TVariables> {
+  const [isPending, setIsPending] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [data, setData] = useState<TData | null>(null);
+
+  const mutateAsync = useCallback(async (variables: TVariables): Promise<TData> => {
+    setIsPending(true);
+    setIsError(false);
+    setError(null);
+
+    try {
+      // Small delay to simulate network request
+      await new Promise(resolve => setTimeout(resolve, 300));
+      const result = await mutationFn(variables);
+      setData(result);
+      options?.onSuccess?.(result);
+      return result;
+    } catch (e) {
+      const err = e instanceof Error ? e : new Error(String(e));
+      setIsError(true);
+      setError(err);
+      options?.onError?.(err);
+      throw err;
+    } finally {
+      setIsPending(false);
+    }
+  }, [mutationFn, options]);
+
+  const mutate = useCallback((variables: TVariables) => {
+    mutateAsync(variables).catch(() => {});
+  }, [mutateAsync]);
+
+  return { mutate, mutateAsync, isPending, isError, error, data };
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
-  
-  const {
-    data: user,
-    error,
-    isLoading,
-  } = useQuery<SelectUser | undefined, Error>({
-    queryKey: ["/api/user"],
-    queryFn: getQueryFn({ on401: "returnNull" }),
-  });
+  const [user, setUser] = useState<User | null>(mockStore.getCurrentUser());
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  const loginMutation = useMutation({
-    mutationFn: async (credentials: LoginData) => {
-      const res = await apiRequest("POST", "/api/login", credentials);
-      return await res.json();
-    },
-    onSuccess: (user: SelectUser) => {
-      queryClient.setQueryData(["/api/user"], user);
-      toast({
-        title: "Welcome back!",
-        description: `Logged in as ${user.firstName || user.username}`,
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Login failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+  // Subscribe to store changes
+  useEffect(() => {
+    const unsubscribe = mockStore.subscribe(() => {
+      setUser(mockStore.getCurrentUser());
+    });
+    // Initial load complete
+    setIsLoading(false);
+    return unsubscribe;
+  }, []);
 
-  const adminLoginMutation = useMutation({
-    mutationFn: async (credentials: LoginData) => {
-      const res = await apiRequest("POST", "/api/admin/login", credentials);
-      return await res.json();
+  const loginMutation = useMockMutation<User, LoginData>(
+    async (credentials) => {
+      const loggedInUser = mockStore.login(credentials.username, credentials.password, false);
+      if (!loggedInUser) {
+        throw new Error('Invalid username or password');
+      }
+      return loggedInUser;
     },
-    onSuccess: (user: SelectUser) => {
-      queryClient.setQueryData(["/api/user"], user);
-      toast({
-        title: "Welcome, Admin!",
-        description: `Logged in as ${user.firstName || user.username}`,
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Admin login failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+    {
+      onSuccess: (user) => {
+        toast({
+          title: "Welcome back!",
+          description: `Logged in as ${user.firstName || user.username}`,
+        });
+      },
+      onError: (error) => {
+        toast({
+          title: "Login failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      },
+    }
+  );
 
-  const registerMutation = useMutation({
-    mutationFn: async (newUser: RegisterData) => {
-      const res = await apiRequest("POST", "/api/register", newUser);
-      return await res.json();
+  const adminLoginMutation = useMockMutation<User, LoginData>(
+    async (credentials) => {
+      const loggedInUser = mockStore.login(credentials.username, credentials.password, true);
+      if (!loggedInUser) {
+        throw new Error('Invalid username or password');
+      }
+      return loggedInUser;
     },
-    onSuccess: (user: SelectUser) => {
-      queryClient.setQueryData(["/api/user"], user);
-      toast({
-        title: "Account created!",
-        description: "Welcome to Univaciti",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Registration failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+    {
+      onSuccess: (user) => {
+        toast({
+          title: "Welcome, Admin!",
+          description: `Logged in as ${user.firstName || user.username}`,
+        });
+      },
+      onError: (error) => {
+        toast({
+          title: "Admin login failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      },
+    }
+  );
 
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
-      await apiRequest("POST", "/api/logout");
+  const registerMutation = useMockMutation<User, RegisterData>(
+    async (newUser) => {
+      return mockStore.register(newUser);
     },
-    onSuccess: () => {
-      queryClient.setQueryData(["/api/user"], null);
-      toast({
-        title: "Logged out",
-        description: "See you next time!",
-      });
+    {
+      onSuccess: () => {
+        toast({
+          title: "Account created!",
+          description: "Welcome to Univaciti",
+        });
+      },
+      onError: (error) => {
+        toast({
+          title: "Registration failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      },
+    }
+  );
+
+  const logoutMutation = useMockMutation<void, void>(
+    async () => {
+      mockStore.logout();
     },
-    onError: (error: Error) => {
-      toast({
-        title: "Logout failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+    {
+      onSuccess: () => {
+        toast({
+          title: "Logged out",
+          description: "See you next time!",
+        });
+      },
+      onError: (error) => {
+        toast({
+          title: "Logout failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      },
+    }
+  );
 
   return (
     <AuthContext.Provider
       value={{
-        user: user ?? null,
+        user,
         isLoading,
         error,
         loginMutation,

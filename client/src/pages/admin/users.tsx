@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/use-auth";
+import { Pagination } from "@/components/Pagination";
 import logoUrl from "@assets/logo_1769031259580.png";
-import { mockUsers } from "@/lib/mock-data";
+import { mockStore, User } from "@/lib/mock-store";
 
 const THEME_PRIMARY = "#1E9AD6";
 
@@ -19,7 +20,9 @@ export default function AdminUsers() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterRole, setFilterRole] = useState("");
-  const [users, setUsers] = useState(mockUsers);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [users, setUsers] = useState<User[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newUser, setNewUser] = useState({
     username: "",
@@ -29,11 +32,21 @@ export default function AdminUsers() {
     role: "student",
   });
 
+  // Load users from store
+  useEffect(() => {
+    setUsers(mockStore.getUsers());
+    const unsubscribe = mockStore.subscribe(() => {
+      setUsers(mockStore.getUsers());
+    });
+    return unsubscribe;
+  }, []);
+
   const handleLogout = async () => {
     await logoutMutation.mutateAsync();
     setLocation("/admin/login");
   };
 
+  // Filter users
   const filteredUsers = users.filter((u) => {
     const matchesSearch =
       u.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -43,32 +56,49 @@ export default function AdminUsers() {
     return matchesSearch && matchesRole;
   });
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage);
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  };
+
+  const handleFilterChange = (value: string) => {
+    setFilterRole(value);
+    setCurrentPage(1);
+  };
+
   const handleAddUser = () => {
     if (!newUser.username || !newUser.email || !newUser.firstName) return;
-    
-    const newId = Math.max(...users.map(u => u.id)) + 1;
-    setUsers([...users, {
-      id: newId,
-      ...newUser,
-      isActive: true,
-      createdAt: new Date().toISOString(),
-    }]);
-    setShowAddModal(false);
-    setNewUser({ username: "", email: "", firstName: "", lastName: "", role: "student" });
-    alert("User created successfully!");
+
+    try {
+      mockStore.addUser({
+        username: newUser.username,
+        email: newUser.email,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        role: newUser.role,
+        isActive: true,
+        password: 'password123',
+      });
+      setShowAddModal(false);
+      setNewUser({ username: "", email: "", firstName: "", lastName: "", role: "student" });
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Failed to create user');
+    }
   };
 
   const handleDeleteUser = (id: number) => {
     if (confirm("Are you sure you want to delete this user?")) {
-      setUsers(users.filter(u => u.id !== id));
-      alert("User deleted successfully!");
+      mockStore.deleteUser(id);
     }
   };
 
   const handleToggleActive = (id: number) => {
-    setUsers(users.map(u => 
-      u.id === id ? { ...u, isActive: !u.isActive } : u
-    ));
+    mockStore.toggleUserActive(id);
   };
 
   return (
@@ -84,7 +114,7 @@ export default function AdminUsers() {
                 <span className="text-xs block text-muted-foreground">Admin Portal</span>
               </div>
             </div>
-            
+
             <nav className="flex items-center gap-6">
               <Link href="/admin/dashboard">
                 <span className="text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">Dashboard</span>
@@ -117,7 +147,7 @@ export default function AdminUsers() {
             <h1 className="text-2xl font-bold mb-1">Users</h1>
             <p className="text-muted-foreground">Manage student and instructor accounts</p>
           </div>
-          <Button 
+          <Button
             onClick={() => setShowAddModal(true)}
             className="text-white"
             style={{ backgroundColor: THEME_PRIMARY }}
@@ -131,12 +161,12 @@ export default function AdminUsers() {
           <Input
             placeholder="Search by name or email..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             className="max-w-sm"
           />
           <select
             value={filterRole}
-            onChange={(e) => setFilterRole(e.target.value)}
+            onChange={(e) => handleFilterChange(e.target.value)}
             className="px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg text-sm"
           >
             <option value="">All Roles</option>
@@ -147,7 +177,7 @@ export default function AdminUsers() {
         </div>
 
         {/* Users Table */}
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
           <table className="w-full">
             <thead>
               <tr className="text-left text-sm text-muted-foreground border-b border-slate-200 dark:border-slate-700">
@@ -160,7 +190,7 @@ export default function AdminUsers() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-              {filteredUsers.map((u) => (
+              {paginatedUsers.map((u) => (
                 <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
                   <td className="px-6 py-4">
                     <p className="font-medium">{u.firstName} {u.lastName}</p>
@@ -190,9 +220,9 @@ export default function AdminUsers() {
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
                       <Button variant="ghost" size="sm">Edit</Button>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         className="text-red-600 hover:text-red-700"
                         onClick={() => handleDeleteUser(u.id)}
                       >
@@ -204,12 +234,25 @@ export default function AdminUsers() {
               ))}
             </tbody>
           </table>
-          
-          {filteredUsers.length === 0 && (
+
+          {paginatedUsers.length === 0 && (
             <div className="text-center py-12">
               <p className="text-muted-foreground">No users found</p>
             </div>
           )}
+
+          {/* Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={filteredUsers.length}
+            itemsPerPage={itemsPerPage}
+            onPageChange={setCurrentPage}
+            onItemsPerPageChange={(newSize) => {
+              setItemsPerPage(newSize);
+              setCurrentPage(1);
+            }}
+          />
         </div>
 
         {/* Stats */}
@@ -289,8 +332,8 @@ export default function AdminUsers() {
               <Button variant="outline" onClick={() => setShowAddModal(false)} className="flex-1">
                 Cancel
               </Button>
-              <Button 
-                onClick={handleAddUser} 
+              <Button
+                onClick={handleAddUser}
                 className="flex-1 text-white"
                 style={{ backgroundColor: THEME_PRIMARY }}
               >

@@ -1,3 +1,44 @@
+// Nigerian name pools for generating diverse data
+const nigerianFirstNamesMale = [
+  "Chukwuemeka", "Oluwaseun", "Babatunde", "Ikechukwu", "Adewale", "Chibueze", "Olumide", "Tochukwu",
+  "Ayodele", "Obinna", "Chinedu", "Emeka", "Olalekan", "Damilare", "Kelechi", "Uchenna", "Nnamdi",
+  "Oluwafemi", "Adebayo", "Chijioke", "Kayode", "Onyekachi", "Temitope", "Yusuf", "Ibrahim", "Musa",
+  "Abdullahi", "Aliyu", "Suleiman", "Hassan", "Abubakar", "Usman", "Lawal", "Bello", "Garba",
+  "Taiwo", "Kehinde", "Segun", "Femi", "Gbenga", "Kunle", "Tunde", "Wale", "Jide", "Sola",
+  "Dayo", "Lanre", "Rotimi", "Niyi", "Bode"
+];
+
+const nigerianFirstNamesFemale = [
+  "Ngozi", "Adaeze", "Folake", "Chidinma", "Oluwabunmi", "Aisha", "Fatima", "Amina", "Halima",
+  "Blessing", "Chiamaka", "Chinasa", "Nneka", "Adanna", "Ifeoma", "Obiageli", "Chinyere", "Uju",
+  "Nkechi", "Amarachi", "Chioma", "Adaobi", "Funmilayo", "Omolola", "Yetunde", "Titilayo", "Olayinka",
+  "Mojisola", "Abimbola", "Temiloluwa", "Adeola", "Bukola", "Tolulope", "Damilola", "Jumoke",
+  "Lola", "Tomi", "Sade", "Bola", "Nike", "Peju", "Ronke", "Toyin", "Bisi", "Kemi",
+  "Rashida", "Zainab", "Hauwa", "Mariam", "Hadiza"
+];
+
+const nigerianLastNames = [
+  "Okafor", "Adeyemi", "Afolabi", "Nwachukwu", "Ogundimu", "Balogun", "Eze", "Okoro", "Nwosu",
+  "Okonkwo", "Adekunle", "Olawale", "Bakare", "Adeleke", "Akinwumi", "Olagunju", "Oyelaran",
+  "Osagie", "Ugochukwu", "Chukwuma", "Nwankwo", "Onuoha", "Ikenna", "Obiora", "Azubuike",
+  "Emecheta", "Achebe", "Adichie", "Chimamanda", "Okwu", "Igwe", "Obi", "Agu", "Anyanwu",
+  "Nwafor", "Ogbu", "Okeke", "Uzoma", "Ezeani", "Nnamdi", "Opara", "Onyema", "Uche",
+  "Abdullahi", "Yusuf", "Ibrahim", "Musa", "Bello", "Lawal", "Suleiman", "Hassan", "Aliyu",
+  "Abubakar", "Usman", "Garba", "Mohammed", "Idris", "Shehu", "Danjuma", "Waziri",
+  "Fashola", "Tinubu", "Sanusi", "Dangote", "Elumelu", "Adenuga", "Otedola", "Rabiu"
+];
+
+const nigerianCompanies = [
+  "MTN Nigeria", "Flutterwave", "Paystack", "Kuda Bank", "Interswitch", "Dangote Group",
+  "Access Bank", "GTBank", "First Bank", "Zenith Bank", "Andela", "OPay", "PalmPay", "Moniepoint",
+  "Sterling Bank", "Fidelity Bank", "UBA", "Stanbic IBTC", "FCMB", "Ecobank", "TeamApt",
+  "Carbon", "Cowrywise", "Piggyvest", "Bamboo", "Risevest", "Patricia", "Quidax", "Bundle",
+  "AWS Nigeria", "Microsoft Nigeria", "Google Nigeria", "Meta Nigeria", "IBM Nigeria"
+];
+
+const specializations = ["cloud-engineering", "data-analytics", "software-java", "software-react", "quality-assurance", "solutions-architecture", "ai-ml"];
+
+// Generate 25 Nigerian instructors
 export const nigerianInstructors = [
   {
     id: 1,
@@ -69,25 +110,217 @@ export const nigerianInstructors = [
     specialization: "ai-ml",
     role: "instructor" as const,
   },
+  {
+    id: 8,
+    firstName: "Adewale",
+    lastName: "Adekunle",
+    email: "adewale.adekunle@univaciti.com",
+    avatar: "https://randomuser.me/api/portraits/men/45.jpg",
+    bio: "DevOps Lead at OPay. Kubernetes expert. Previously at Google Cloud Nigeria.",
+    specialization: "cloud-engineering",
+    role: "instructor" as const,
+  },
+  {
+    id: 9,
+    firstName: "Chidinma",
+    lastName: "Okoro",
+    email: "chidinma.okoro@univaciti.com",
+    avatar: "https://randomuser.me/api/portraits/women/55.jpg",
+    bio: "Senior Data Engineer at Carbon. ETL specialist. MSc from University of Ibadan.",
+    specialization: "data-analytics",
+    role: "instructor" as const,
+  },
+  {
+    id: 10,
+    firstName: "Olumide",
+    lastName: "Fashola",
+    email: "olumide.fashola@univaciti.com",
+    avatar: "https://randomuser.me/api/portraits/men/38.jpg",
+    bio: "Backend Lead at Piggyvest. 8 years Java experience. Spring certified developer.",
+    specialization: "software-java",
+    role: "instructor" as const,
+  },
+  {
+    id: 11,
+    firstName: "Aisha",
+    lastName: "Abdullahi",
+    email: "aisha.abdullahi@univaciti.com",
+    avatar: "https://randomuser.me/api/portraits/women/42.jpg",
+    bio: "Frontend Lead at Cowrywise. React Native specialist. Women in Tech advocate.",
+    specialization: "software-react",
+    role: "instructor" as const,
+  },
+  {
+    id: 12,
+    firstName: "Tochukwu",
+    lastName: "Nwosu",
+    email: "tochukwu.nwosu@univaciti.com",
+    avatar: "https://randomuser.me/api/portraits/men/29.jpg",
+    bio: "QA Manager at TeamApt. Automation testing expert. ISTQB Advanced Level certified.",
+    specialization: "quality-assurance",
+    role: "instructor" as const,
+  },
+  {
+    id: 13,
+    firstName: "Fatima",
+    lastName: "Bello",
+    email: "fatima.bello@univaciti.com",
+    avatar: "https://randomuser.me/api/portraits/women/36.jpg",
+    bio: "Enterprise Architect at Zenith Bank. 15 years banking technology experience.",
+    specialization: "solutions-architecture",
+    role: "instructor" as const,
+  },
+  {
+    id: 14,
+    firstName: "Damilare",
+    lastName: "Olawale",
+    email: "damilare.olawale@univaciti.com",
+    avatar: "https://randomuser.me/api/portraits/men/41.jpg",
+    bio: "ML Engineer at Data Science Nigeria. TensorFlow certified. PhD candidate at LAUTECH.",
+    specialization: "ai-ml",
+    role: "instructor" as const,
+  },
+  {
+    id: 15,
+    firstName: "Chibueze",
+    lastName: "Anyanwu",
+    email: "chibueze.anyanwu@univaciti.com",
+    avatar: "https://randomuser.me/api/portraits/men/48.jpg",
+    bio: "Cloud Security Architect at Access Bank. AWS Security Specialty certified.",
+    specialization: "cloud-engineering",
+    role: "instructor" as const,
+  },
+  {
+    id: 16,
+    firstName: "Oluwabunmi",
+    lastName: "Tinubu",
+    email: "oluwabunmi.tinubu@univaciti.com",
+    avatar: "https://randomuser.me/api/portraits/women/51.jpg",
+    bio: "BI Director at Sterling Bank. Power BI expert. 12 years analytics experience.",
+    specialization: "data-analytics",
+    role: "instructor" as const,
+  },
+  {
+    id: 17,
+    firstName: "Kelechi",
+    lastName: "Igwe",
+    email: "kelechi.igwe@univaciti.com",
+    avatar: "https://randomuser.me/api/portraits/men/53.jpg",
+    bio: "Staff Engineer at Moniepoint. Microservices architect. Java Champion.",
+    specialization: "software-java",
+    role: "instructor" as const,
+  },
+  {
+    id: 18,
+    firstName: "Chiamaka",
+    lastName: "Obi",
+    email: "chiamaka.obi@univaciti.com",
+    avatar: "https://randomuser.me/api/portraits/women/57.jpg",
+    bio: "UI/UX Engineer at Risevest. Next.js expert. Figma community advocate.",
+    specialization: "software-react",
+    role: "instructor" as const,
+  },
+  {
+    id: 19,
+    firstName: "Ayodele",
+    lastName: "Bakare",
+    email: "ayodele.bakare@univaciti.com",
+    avatar: "https://randomuser.me/api/portraits/men/59.jpg",
+    bio: "Test Architect at Ecobank. Performance testing specialist. JMeter expert.",
+    specialization: "quality-assurance",
+    role: "instructor" as const,
+  },
+  {
+    id: 20,
+    firstName: "Amina",
+    lastName: "Lawal",
+    email: "amina.lawal@univaciti.com",
+    avatar: "https://randomuser.me/api/portraits/women/61.jpg",
+    bio: "Technical Architect at First Bank. Azure certified. 18 years IT experience.",
+    specialization: "solutions-architecture",
+    role: "instructor" as const,
+  },
+  {
+    id: 21,
+    firstName: "Obinna",
+    lastName: "Emecheta",
+    email: "obinna.emecheta@univaciti.com",
+    avatar: "https://randomuser.me/api/portraits/men/63.jpg",
+    bio: "Computer Vision Lead at Zindi. PyTorch specialist. Published AI researcher.",
+    specialization: "ai-ml",
+    role: "instructor" as const,
+  },
+  {
+    id: 22,
+    firstName: "Nnamdi",
+    lastName: "Opara",
+    email: "nnamdi.opara@univaciti.com",
+    avatar: "https://randomuser.me/api/portraits/men/65.jpg",
+    bio: "Platform Engineer at Bamboo. Terraform expert. HashiCorp Ambassador.",
+    specialization: "cloud-engineering",
+    role: "instructor" as const,
+  },
+  {
+    id: 23,
+    firstName: "Halima",
+    lastName: "Suleiman",
+    email: "halima.suleiman@univaciti.com",
+    avatar: "https://randomuser.me/api/portraits/women/66.jpg",
+    bio: "Analytics Manager at GTBank. SQL expert. Tableau certified professional.",
+    specialization: "data-analytics",
+    role: "instructor" as const,
+  },
+  {
+    id: 24,
+    firstName: "Uchenna",
+    lastName: "Nwankwo",
+    email: "uchenna.nwankwo@univaciti.com",
+    avatar: "https://randomuser.me/api/portraits/men/69.jpg",
+    bio: "Engineering Manager at Patricia. Full-stack developer. Node.js contributor.",
+    specialization: "software-react",
+    role: "instructor" as const,
+  },
+  {
+    id: 25,
+    firstName: "Zainab",
+    lastName: "Mohammed",
+    email: "zainab.mohammed@univaciti.com",
+    avatar: "https://randomuser.me/api/portraits/women/71.jpg",
+    bio: "NLP Researcher at Instadeep. PhD from Cambridge. Multilingual AI specialist.",
+    specialization: "ai-ml",
+    role: "instructor" as const,
+  },
 ];
 
-export const nigerianStudents = [
-  { id: 101, firstName: "Adaobi", lastName: "Okeke", points: 2450, coursesCompleted: 5, streak: 21 },
-  { id: 102, firstName: "Emeka", lastName: "Nnamdi", points: 2380, coursesCompleted: 4, streak: 18 },
-  { id: 103, firstName: "Funmilayo", lastName: "Adebayo", points: 2290, coursesCompleted: 5, streak: 30 },
-  { id: 104, firstName: "Gbenga", lastName: "Oluwole", points: 2150, coursesCompleted: 4, streak: 14 },
-  { id: 105, firstName: "Halima", lastName: "Yusuf", points: 2080, coursesCompleted: 3, streak: 25 },
-  { id: 106, firstName: "Ifeanyi", lastName: "Ugochukwu", points: 1950, coursesCompleted: 4, streak: 12 },
-  { id: 107, firstName: "Jumoke", lastName: "Fashola", points: 1890, coursesCompleted: 3, streak: 19 },
-  { id: 108, firstName: "Kunle", lastName: "Ajayi", points: 1820, coursesCompleted: 3, streak: 16 },
-  { id: 109, firstName: "Lola", lastName: "Bakare", points: 1750, coursesCompleted: 3, streak: 11 },
-  { id: 110, firstName: "Musa", lastName: "Ibrahim", points: 1680, coursesCompleted: 2, streak: 22 },
-  { id: 111, firstName: "Nneka", lastName: "Obi", points: 1620, coursesCompleted: 3, streak: 9 },
-  { id: 112, firstName: "Obiora", lastName: "Chukwuma", points: 1550, coursesCompleted: 2, streak: 15 },
-  { id: 113, firstName: "Patience", lastName: "Etuk", points: 1490, coursesCompleted: 2, streak: 8 },
-  { id: 114, firstName: "Quadri", lastName: "Lawal", points: 1430, coursesCompleted: 2, streak: 13 },
-  { id: 115, firstName: "Rashida", lastName: "Abdullahi", points: 1380, coursesCompleted: 2, streak: 7 },
-];
+// Generate 120 Nigerian students with realistic data
+const generateNigerianStudents = () => {
+  const students = [];
+  const allFirstNames = [...nigerianFirstNamesMale, ...nigerianFirstNamesFemale];
+
+  for (let i = 0; i < 120; i++) {
+    const isFemale = i % 2 === 0;
+    const firstNames = isFemale ? nigerianFirstNamesFemale : nigerianFirstNamesMale;
+    const firstName = firstNames[i % firstNames.length];
+    const lastName = nigerianLastNames[i % nigerianLastNames.length];
+
+    // Generate realistic points (higher ranked students have more points)
+    const basePoints = 2500 - (i * 15);
+    const points = Math.max(500, basePoints + Math.floor(Math.random() * 100));
+
+    students.push({
+      id: 101 + i,
+      firstName,
+      lastName,
+      points,
+      coursesCompleted: Math.max(1, Math.floor((120 - i) / 20)),
+      streak: Math.max(1, Math.floor(Math.random() * 30) + 1),
+    });
+  }
+
+  return students;
+};
+
+export const nigerianStudents = generateNigerianStudents();
 
 export const mockCourses = [
   {
@@ -342,24 +575,27 @@ export const allAchievements = [
 ];
 
 export const mockUserStats = {
-  totalPoints: 1250,
-  coursesCompleted: 2,
-  coursesInProgress: 3,
-  lessonsCompleted: 47,
-  totalLessons: 120,
-  currentStreak: 14,
-  longestStreak: 21,
-  totalTimeSpent: 4320,
-  earnedBadgeIds: [1, 2, 3],
-  rank: 23,
-  totalStudents: 1523,
+  totalPoints: 1850,
+  coursesCompleted: 3,
+  coursesInProgress: 2,
+  lessonsCompleted: 87,
+  totalLessons: 140,
+  currentStreak: 18,
+  longestStreak: 32,
+  totalTimeSpent: 7200,
+  earnedBadgeIds: [1, 2, 3, 4, 5],
+  rank: 15,
+  totalStudents: nigerianStudents.length,
 };
 
-export const mockLeaderboard = nigerianStudents.map((student, index) => ({
-  ...student,
-  rank: index + 1,
-  avatar: `https://randomuser.me/api/portraits/${index % 2 === 0 ? 'women' : 'men'}/${20 + index}.jpg`,
-}));
+// Generate leaderboard from all students, sorted by points
+export const mockLeaderboard = [...nigerianStudents]
+  .sort((a, b) => b.points - a.points)
+  .map((student, index) => ({
+    ...student,
+    rank: index + 1,
+    avatar: `https://randomuser.me/api/portraits/${index % 2 === 0 ? 'women' : 'men'}/${(20 + index) % 99}.jpg`,
+  }));
 
 export const techLogos: Record<string, string> = {
   aws: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg",
@@ -409,30 +645,286 @@ export const specializationInfo: Record<string, { name: string; color: string; i
   "ai-ml": { name: "AI & Machine Learning", color: "#FF6F00", icon: "brain" },
 };
 
-export const mockUsers = [
-  { id: 1, username: "admin", email: "admin@univaciti.com", firstName: "Admin", lastName: "User", role: "admin", isActive: true, createdAt: "2025-01-01T10:00:00Z" },
-  { id: 2, username: "instructor", email: "instructor@univaciti.com", firstName: "Sarah", lastName: "Johnson", role: "instructor", isActive: true, createdAt: "2025-01-02T10:00:00Z" },
-  { id: 3, username: "chukwuemeka.okonkwo", email: "chukwuemeka@gmail.com", firstName: "Chukwuemeka", lastName: "Okonkwo", role: "student", isActive: true, createdAt: "2025-01-15T10:00:00Z" },
-  { id: 4, username: "ngozi.adeyemi", email: "ngozi.adeyemi@yahoo.com", firstName: "Ngozi", lastName: "Adeyemi", role: "student", isActive: true, createdAt: "2025-01-16T10:00:00Z" },
-  { id: 5, username: "oluwaseun.bakare", email: "seun.bakare@outlook.com", firstName: "Oluwaseun", lastName: "Bakare", role: "student", isActive: true, createdAt: "2025-01-17T10:00:00Z" },
-  { id: 6, username: "amina.yusuf", email: "amina.yusuf@gmail.com", firstName: "Amina", lastName: "Yusuf", role: "student", isActive: true, createdAt: "2025-01-18T10:00:00Z" },
-  { id: 7, username: "tunde.olatunji", email: "tunde.olatunji@gmail.com", firstName: "Tunde", lastName: "Olatunji", role: "student", isActive: true, createdAt: "2025-01-19T10:00:00Z" },
-  { id: 8, username: "blessing.eze", email: "blessing.eze@yahoo.com", firstName: "Blessing", lastName: "Eze", role: "student", isActive: true, createdAt: "2025-01-20T10:00:00Z" },
-  { id: 9, username: "ibrahim.musa", email: "ibrahim.musa@gmail.com", firstName: "Ibrahim", lastName: "Musa", role: "student", isActive: true, createdAt: "2025-01-21T10:00:00Z" },
-  { id: 10, username: "folake.adeniyi", email: "folake.adeniyi@outlook.com", firstName: "Folake", lastName: "Adeniyi", role: "student", isActive: true, createdAt: "2025-01-22T10:00:00Z" },
-  { id: 11, username: "emeka.nwachukwu", email: "emeka.nwachukwu@gmail.com", firstName: "Emeka", lastName: "Nwachukwu", role: "student", isActive: false, createdAt: "2025-01-23T10:00:00Z" },
-  { id: 12, username: "aisha.abdullahi", email: "aisha.abdullahi@yahoo.com", firstName: "Aisha", lastName: "Abdullahi", role: "student", isActive: true, createdAt: "2025-01-24T10:00:00Z" },
-];
+// Generate comprehensive mock users (1 admin, 25 instructors, 120+ students)
+const generateMockUsers = () => {
+  const users = [];
+  const emailDomains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com"];
 
-export const mockAdminEnrollments = [
-  { id: 1, userId: 3, courseId: 1, user: mockUsers[2], course: mockCourses[0], status: "active", progress: 65, enrolledAt: "2025-01-20T10:00:00Z" },
-  { id: 2, userId: 4, courseId: 2, user: mockUsers[3], course: mockCourses[1], status: "completed", progress: 100, enrolledAt: "2025-01-21T10:00:00Z" },
-  { id: 3, userId: 5, courseId: 3, user: mockUsers[4], course: mockCourses[2], status: "active", progress: 45, enrolledAt: "2025-01-22T10:00:00Z" },
-  { id: 4, userId: 6, courseId: 1, user: mockUsers[5], course: mockCourses[0], status: "active", progress: 80, enrolledAt: "2025-01-23T10:00:00Z" },
-  { id: 5, userId: 7, courseId: 4, user: mockUsers[6], course: mockCourses[3], status: "pending", progress: 0, enrolledAt: "2025-01-24T10:00:00Z" },
-  { id: 6, userId: 8, courseId: 2, user: mockUsers[7], course: mockCourses[1], status: "active", progress: 30, enrolledAt: "2025-01-25T10:00:00Z" },
-  { id: 7, userId: 9, courseId: 5, user: mockUsers[8], course: mockCourses[4], status: "completed", progress: 100, enrolledAt: "2025-01-26T10:00:00Z" },
-  { id: 8, userId: 10, courseId: 1, user: mockUsers[9], course: mockCourses[0], status: "active", progress: 55, enrolledAt: "2025-01-27T10:00:00Z" },
-  { id: 9, userId: 3, courseId: 6, user: mockUsers[2], course: mockCourses[5], status: "active", progress: 20, enrolledAt: "2025-01-28T10:00:00Z" },
-  { id: 10, userId: 4, courseId: 7, user: mockUsers[3], course: mockCourses[6], status: "expired", progress: 15, enrolledAt: "2025-01-10T10:00:00Z" },
-];
+  // Admin user
+  users.push({
+    id: 1,
+    username: "admin",
+    email: "admin@univaciti.com",
+    firstName: "Adebayo",
+    lastName: "Ogunleye",
+    role: "admin",
+    isActive: true,
+    createdAt: "2025-01-01T10:00:00Z",
+  });
+
+  // Simple instructor shortcut (like admin shortcut)
+  users.push({
+    id: 2,
+    username: "instructor",
+    email: "instructor@univaciti.com",
+    firstName: "Chukwuemeka",
+    lastName: "Okafor",
+    role: "instructor",
+    isActive: true,
+    createdAt: "2025-01-02T10:00:00Z",
+  });
+
+  // Simple student shortcut (like admin shortcut)
+  users.push({
+    id: 3,
+    username: "student",
+    email: "student@univaciti.com",
+    firstName: "Ngozi",
+    lastName: "Adeyemi",
+    role: "student",
+    isActive: true,
+    createdAt: "2025-01-03T10:00:00Z",
+  });
+
+  // Add instructors from nigerianInstructors (starting from id 4)
+  nigerianInstructors.forEach((instructor, index) => {
+    users.push({
+      id: 4 + index,
+      username: `${instructor.firstName.toLowerCase()}.${instructor.lastName.toLowerCase()}`,
+      email: instructor.email,
+      firstName: instructor.firstName,
+      lastName: instructor.lastName,
+      role: "instructor",
+      isActive: true,
+      createdAt: new Date(2025, 0, 3 + index).toISOString(),
+    });
+  });
+
+  // Add 120 students with Nigerian names
+  // startId = 1 (admin) + 1 (instructor shortcut) + 1 (student shortcut) + 25 (instructors) + 1 = 29
+  const startId = 4 + nigerianInstructors.length;
+  for (let i = 0; i < 120; i++) {
+    const student = nigerianStudents[i];
+    const domain = emailDomains[i % emailDomains.length];
+    const dayOffset = i % 28;
+    const monthOffset = Math.floor(i / 28);
+    const createdDate = new Date(2025, monthOffset, 1 + dayOffset);
+
+    users.push({
+      id: startId + i,
+      username: `${student.firstName.toLowerCase()}.${student.lastName.toLowerCase()}${i > 0 ? i : ''}`,
+      email: `${student.firstName.toLowerCase()}.${student.lastName.toLowerCase()}${i > 0 ? i : ''}@${domain}`,
+      firstName: student.firstName,
+      lastName: student.lastName,
+      role: "student",
+      isActive: i % 10 !== 0, // 10% inactive
+      createdAt: createdDate.toISOString(),
+    });
+  }
+
+  return users;
+};
+
+export const mockUsers = generateMockUsers();
+
+// Generate 250+ enrollments with realistic data
+const generateMockEnrollments = () => {
+  const enrollments = [];
+  const statuses = ["active", "active", "active", "completed", "pending", "expired"]; // weighted towards active
+  const startId = 4 + nigerianInstructors.length; // First student ID (after admin, instructor shortcut, student shortcut, and all instructors)
+
+  // Each student enrolls in 1-3 courses
+  let enrollmentId = 1;
+  for (let studentIndex = 0; studentIndex < 120; studentIndex++) {
+    const studentUserId = startId + studentIndex;
+    const student = mockUsers.find(u => u.id === studentUserId);
+    if (!student) continue;
+
+    // Number of courses this student is enrolled in (1-3)
+    const numCourses = 1 + (studentIndex % 3);
+
+    for (let c = 0; c < numCourses; c++) {
+      const courseIndex = (studentIndex + c) % mockCourses.length;
+      const course = mockCourses[courseIndex];
+
+      // Generate realistic progress and status
+      const statusIndex = (studentIndex + c) % statuses.length;
+      const status = statuses[statusIndex];
+      let progress = 0;
+
+      if (status === "completed") {
+        progress = 100;
+      } else if (status === "active") {
+        progress = Math.floor(Math.random() * 85) + 10;
+      } else if (status === "expired") {
+        progress = Math.floor(Math.random() * 40);
+      } else if (status === "pending") {
+        progress = 0;
+      }
+
+      // Generate realistic enrolled date
+      const daysAgo = Math.floor(Math.random() * 180);
+      const enrolledDate = new Date();
+      enrolledDate.setDate(enrolledDate.getDate() - daysAgo);
+
+      enrollments.push({
+        id: enrollmentId++,
+        userId: studentUserId,
+        courseId: course.id,
+        user: student,
+        course: course,
+        status,
+        progress,
+        enrolledAt: enrolledDate.toISOString(),
+      });
+    }
+  }
+
+  return enrollments;
+};
+
+export const mockAdminEnrollments = generateMockEnrollments();
+
+// Mock lessons data for each course module
+export interface MockLesson {
+  id: number;
+  moduleId: number;
+  title: string;
+  type: "text" | "video" | "code" | "quiz";
+  content: string;
+  videoUrl?: string;
+  order: number;
+  isPublished: boolean;
+  estimatedMinutes: number;
+}
+
+export interface MockModule {
+  id: number;
+  courseId: number;
+  title: string;
+  description: string;
+  order: number;
+  isPublished: boolean;
+  lessons: MockLesson[];
+}
+
+// Generate mock modules and lessons for each course
+const generateMockModulesForCourse = (courseId: number, courseTitle: string): MockModule[] => {
+  const baseModuleId = courseId * 100;
+  const baseLessonId = courseId * 1000;
+
+  const moduleTemplates = [
+    { title: "Introduction & Setup", description: "Get started with the fundamentals" },
+    { title: "Core Concepts", description: "Master the essential concepts" },
+    { title: "Advanced Topics", description: "Deep dive into advanced features" },
+    { title: "Practical Projects", description: "Apply what you learned" },
+    { title: "Final Assessment", description: "Test your knowledge" },
+  ];
+
+  return moduleTemplates.map((template, moduleIndex) => {
+    const moduleId = baseModuleId + moduleIndex + 1;
+    const lessons: MockLesson[] = [
+      {
+        id: baseLessonId + (moduleIndex * 10) + 1,
+        moduleId,
+        title: `${template.title} Overview`,
+        type: "text",
+        content: `<h1>${template.title}</h1><p>Welcome to this module. In this section, you will learn about ${template.description.toLowerCase()}.</p><h2>Learning Objectives</h2><ul><li>Understand the key concepts</li><li>Apply practical knowledge</li><li>Build real-world projects</li></ul>`,
+        order: 1,
+        isPublished: true,
+        estimatedMinutes: 15,
+      },
+      {
+        id: baseLessonId + (moduleIndex * 10) + 2,
+        moduleId,
+        title: "Video Tutorial",
+        type: "video",
+        content: "",
+        videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        order: 2,
+        isPublished: true,
+        estimatedMinutes: 20,
+      },
+      {
+        id: baseLessonId + (moduleIndex * 10) + 3,
+        moduleId,
+        title: "Hands-on Exercise",
+        type: "code",
+        content: `<h2>Exercise: Practice What You Learned</h2><p>Complete the following code exercise to reinforce your understanding.</p><pre><code>// Your code here
+function example() {
+  console.log("Hello, World!");
+}
+</code></pre>`,
+        order: 3,
+        isPublished: true,
+        estimatedMinutes: 25,
+      },
+      {
+        id: baseLessonId + (moduleIndex * 10) + 4,
+        moduleId,
+        title: "Module Quiz",
+        type: "quiz",
+        content: JSON.stringify([
+          {
+            id: `q1-${moduleId}`,
+            question: "What is the main purpose of this module?",
+            options: ["Learning basics", "Advanced topics", "Testing", "All of the above"],
+            correctAnswer: 3,
+            points: 10,
+            explanation: "This module covers all aspects of the topic."
+          },
+          {
+            id: `q2-${moduleId}`,
+            question: "Which best describes your learning progress?",
+            options: ["Just started", "Intermediate", "Advanced", "Expert"],
+            correctAnswer: 1,
+            points: 10,
+            explanation: "Keep learning to advance your skills!"
+          }
+        ]),
+        order: 4,
+        isPublished: true,
+        estimatedMinutes: 10,
+      },
+    ];
+
+    return {
+      id: moduleId,
+      courseId,
+      title: template.title,
+      description: template.description,
+      order: moduleIndex + 1,
+      isPublished: moduleIndex < 3,
+      lessons,
+    };
+  });
+};
+
+// Create mock modules for all courses
+export const mockModules: MockModule[] = mockCourses.flatMap((course) =>
+  generateMockModulesForCourse(course.id, course.title)
+);
+
+// Helper to get modules for a specific course
+export const getModulesForCourse = (courseId: number): MockModule[] => {
+  return mockModules.filter(m => m.courseId === courseId);
+};
+
+// Helper to get a specific lesson
+export const getLesson = (lessonId: number): MockLesson | undefined => {
+  for (const module of mockModules) {
+    const lesson = module.lessons.find(l => l.id === lessonId);
+    if (lesson) return lesson;
+  }
+  return undefined;
+};
+
+// Helper to get course with modules
+export const getCourseWithModules = (courseId: number) => {
+  const course = mockCourses.find(c => c.id === courseId);
+  if (!course) return null;
+  return {
+    ...course,
+    modules: getModulesForCourse(courseId),
+  };
+};

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/use-auth";
@@ -102,6 +102,18 @@ export default function AdminLoginPage() {
 
           <div className="text-center text-sm text-muted-foreground">
             <p>Only authorized administrators can access this portal.</p>
+          </div>
+
+          {/* Demo Credentials */}
+          <div className="mt-6 p-4 rounded-lg bg-slate-100 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600">
+            <p className="text-xs font-medium text-muted-foreground mb-2">Demo Credentials (Admin Portal):</p>
+            <div className="space-y-1 text-xs">
+              <p><span className="font-medium">Admin:</span> admin / admin123</p>
+              <p><span className="font-medium">Instructor:</span> instructor / instructor123</p>
+            </div>
+            <p className="text-xs text-muted-foreground mt-3">
+              Student? <Link href="/login" className="font-medium hover:underline" style={{ color: THEME_PRIMARY }}>Login here</Link>
+            </p>
           </div>
         </div>
       </div>

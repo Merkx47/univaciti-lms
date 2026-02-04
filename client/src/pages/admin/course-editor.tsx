@@ -3,9 +3,10 @@ import { useRoute, useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Save, BookOpen } from "lucide-react";
+import { ArrowLeft, Save, BookOpen, CheckCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import logoUrl from "@assets/logo_1769031259580.png";
-import { mockCourses } from "@/lib/mock-data";
+import { mockStore } from "@/lib/mock-store";
 
 const THEME_PRIMARY = "#1E9AD6";
 
@@ -34,8 +35,10 @@ const availableTechnologies = [
 export default function CourseEditor() {
   const [, params] = useRoute("/admin/courses/:id");
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
   const isNew = params?.id === "new";
   const courseId = isNew ? null : Number(params?.id);
+  const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -51,33 +54,79 @@ export default function CourseEditor() {
     isFeatured: false,
   });
 
-  const existingCourse = courseId ? mockCourses.find(c => c.id === courseId) : null;
-
+  // Load existing course data if editing
   useEffect(() => {
-    if (existingCourse) {
-      setFormData({
-        title: existingCourse.title,
-        slug: existingCourse.slug,
-        specialization: existingCourse.specialization,
-        description: existingCourse.description,
-        shortDescription: existingCourse.shortDescription,
-        difficulty: existingCourse.difficulty,
-        duration: existingCourse.duration,
-        technologies: existingCourse.technologies,
-        isPublished: existingCourse.isPublished,
-        isFeatured: existingCourse.isFeatured,
-      });
+    if (courseId) {
+      const existingCourse = mockStore.getCourseById(courseId);
+      if (existingCourse) {
+        setFormData({
+          title: existingCourse.title || "",
+          slug: existingCourse.slug || "",
+          specialization: existingCourse.specialization || "cloud-engineering",
+          description: existingCourse.description || "",
+          shortDescription: existingCourse.shortDescription || "",
+          difficulty: existingCourse.difficulty || "intermediate",
+          duration: existingCourse.duration || 40,
+          technologies: existingCourse.technologies || [],
+          isPublished: existingCourse.isPublished || false,
+          isFeatured: existingCourse.isFeatured || false,
+        });
+      }
     }
-  }, [existingCourse]);
+  }, [courseId]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     setIsSaving(true);
-    setTimeout(() => {
+
+    try {
+      if (isNew) {
+        // Create new course
+        const newCourse = mockStore.addCourse({
+          title: formData.title,
+          slug: formData.slug,
+          specialization: formData.specialization,
+          description: formData.description,
+          shortDescription: formData.shortDescription,
+          difficulty: formData.difficulty,
+          duration: formData.duration,
+          technologies: formData.technologies,
+          isPublished: formData.isPublished,
+          isFeatured: formData.isFeatured,
+        });
+        setIsSaving(false);
+        toast({
+          title: "Course Created!",
+          description: "Now add modules and lessons to your course.",
+        });
+        // Redirect to curriculum builder so user can add content immediately
+        setLocation(`/admin/courses/${newCourse.id}/curriculum`);
+      } else if (courseId) {
+        // Update existing course
+        mockStore.updateCourse(courseId, {
+          title: formData.title,
+          slug: formData.slug,
+          specialization: formData.specialization,
+          description: formData.description,
+          shortDescription: formData.shortDescription,
+          difficulty: formData.difficulty,
+          duration: formData.duration,
+          technologies: formData.technologies,
+          isPublished: formData.isPublished,
+          isFeatured: formData.isFeatured,
+        });
+        setIsSaving(false);
+        toast({
+          title: "Course Updated!",
+          description: "Your changes have been saved.",
+        });
+        setLocation("/admin/courses");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save course');
       setIsSaving(false);
-      alert(isNew ? "Course created successfully!" : "Course updated successfully!");
-      setLocation("/admin/courses");
-    }, 500);
+    }
   };
 
   const handleTechnologyToggle = (tech: string) => {
@@ -120,10 +169,15 @@ export default function CourseEditor() {
       </header>
 
       <main className="max-w-4xl mx-auto px-6 py-8">
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400">
+            {error}
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
             <h2 className="text-lg font-semibold mb-6">Basic Information</h2>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-2">Course Title</label>
@@ -176,7 +230,7 @@ export default function CourseEditor() {
 
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
             <h2 className="text-lg font-semibold mb-6">Course Details</h2>
-            
+
             <div className="grid md:grid-cols-3 gap-4 mb-6">
               <div>
                 <label className="block text-sm font-medium mb-2">Specialization</label>
@@ -240,7 +294,7 @@ export default function CourseEditor() {
 
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
             <h2 className="text-lg font-semibold mb-6">Publishing Options</h2>
-            
+
             <div className="flex flex-wrap gap-6">
               <label className="flex items-center gap-3 cursor-pointer">
                 <input
@@ -279,8 +333,8 @@ export default function CourseEditor() {
                   </Button>
                 </Link>
               )}
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="gap-2 text-white"
                 style={{ backgroundColor: THEME_PRIMARY }}
                 disabled={isSaving}

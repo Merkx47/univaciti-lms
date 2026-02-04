@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/use-auth";
-import { mockCourses, techLogos } from "@/lib/mock-data";
+import { techLogos } from "@/lib/mock-data";
+import { mockStore, Course } from "@/lib/mock-store";
+import { Pagination } from "@/components/Pagination";
 import logoUrl from "@assets/logo_1769031259580.png";
 
 const THEME_PRIMARY = "#1E9AD6";
@@ -21,9 +23,20 @@ const specializations = [
 export default function AdminCourses() {
   const { user, logoutMutation } = useAuth();
   const [, setLocation] = useLocation();
+  const [courses, setCourses] = useState<Course[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterSpec, setFilterSpec] = useState("");
-  const [courses, setCourses] = useState(mockCourses);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(9);
+
+  // Load courses from store and subscribe to changes
+  useEffect(() => {
+    setCourses(mockStore.getCourses());
+    const unsubscribe = mockStore.subscribe(() => {
+      setCourses(mockStore.getCourses());
+    });
+    return unsubscribe;
+  }, []);
 
   const handleLogout = async () => {
     await logoutMutation.mutateAsync();
@@ -32,8 +45,7 @@ export default function AdminCourses() {
 
   const handleDelete = (id: number) => {
     if (confirm("Are you sure you want to delete this course?")) {
-      setCourses(courses.filter(c => c.id !== id));
-      alert("Course deleted successfully!");
+      mockStore.deleteCourse(id);
     }
   };
 
@@ -43,6 +55,21 @@ export default function AdminCourses() {
     const matchesSpec = !filterSpec || course.specialization === filterSpec;
     return matchesSearch && matchesSpec;
   });
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedCourses = filteredCourses.slice(startIndex, startIndex + itemsPerPage);
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  };
+
+  const handleFilterChange = (value: string) => {
+    setFilterSpec(value);
+    setCurrentPage(1);
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -57,7 +84,7 @@ export default function AdminCourses() {
                 <span className="text-xs block text-muted-foreground">Admin Portal</span>
               </div>
             </div>
-            
+
             <nav className="flex items-center gap-6">
               <Link href="/admin/dashboard">
                 <span className="text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">Dashboard</span>
@@ -122,12 +149,12 @@ export default function AdminCourses() {
           <Input
             placeholder="Search courses..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             className="max-w-sm"
           />
           <select
             value={filterSpec}
-            onChange={(e) => setFilterSpec(e.target.value)}
+            onChange={(e) => handleFilterChange(e.target.value)}
             className="px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg text-sm"
           >
             <option value="">All Specializations</option>
@@ -139,7 +166,7 @@ export default function AdminCourses() {
 
         {/* Courses Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCourses.map((course) => (
+          {paginatedCourses.map((course) => (
             <div
               key={course.id}
               className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-lg transition-shadow"
@@ -149,21 +176,21 @@ export default function AdminCourses() {
               </div>
               <div className="p-4">
                 <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{course.shortDescription}</p>
-                
+
                 <div className="flex items-center gap-2 mb-3">
                   {course.technologies?.slice(0, 4).map((tech: string) => (
                     techLogos[tech] && (
-                      <img 
-                        key={tech} 
-                        src={techLogos[tech]} 
-                        alt={tech} 
+                      <img
+                        key={tech}
+                        src={techLogos[tech]}
+                        alt={tech}
                         className="w-6 h-6"
                         title={tech}
                       />
                     )
                   ))}
                   {(course.technologies?.length || 0) > 4 && (
-                    <span className="text-xs text-muted-foreground">+{course.technologies.length - 4}</span>
+                    <span className="text-xs text-muted-foreground">+{(course.technologies?.length || 0) - 4}</span>
                   )}
                 </div>
 
@@ -186,8 +213,8 @@ export default function AdminCourses() {
                   <Link href={`/admin/courses/${course.id}/curriculum`} className="flex-1">
                     <Button variant="outline" size="sm" className="w-full">Curriculum</Button>
                   </Link>
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     size="sm"
                     className="text-red-600 hover:text-red-700"
                     onClick={() => handleDelete(course.id)}
@@ -208,6 +235,23 @@ export default function AdminCourses() {
                 Create Your First Course
               </Button>
             </Link>
+          </div>
+        )}
+
+        {/* Pagination */}
+        {filteredCourses.length > 0 && (
+          <div className="mt-8 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={filteredCourses.length}
+              itemsPerPage={itemsPerPage}
+              onPageChange={setCurrentPage}
+              onItemsPerPageChange={(newSize) => {
+                setItemsPerPage(newSize);
+                setCurrentPage(1);
+              }}
+            />
           </div>
         )}
       </main>

@@ -5,98 +5,46 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/use-auth";
 import logoUrl from "@assets/logo_1769031259580.png";
-import { mockCourses } from "@/lib/mock-data";
+import { mockStore, Course } from "@/lib/mock-store";
+import { MockModule, MockLesson } from "@/lib/mock-data";
 
 const THEME_PRIMARY = "#1E9AD6";
-
-interface Lesson {
-  id: number;
-  moduleId: number;
-  title: string;
-  type: string;
-  order: number;
-  isPublished: boolean;
-  estimatedMinutes: number;
-}
-
-interface Module {
-  id: number;
-  courseId: number;
-  title: string;
-  description: string;
-  order: number;
-  isPublished: boolean;
-  lessons: Lesson[];
-}
-
-const generateInitialModules = (courseId: number): Module[] => {
-  return [
-    {
-      id: 1,
-      courseId,
-      title: "Getting Started",
-      description: "Introduction to the course",
-      order: 1,
-      isPublished: true,
-      lessons: [
-        { id: 1, moduleId: 1, title: "Welcome & Course Overview", type: "video", order: 1, isPublished: true, estimatedMinutes: 10 },
-        { id: 2, moduleId: 1, title: "Setting Up Your Environment", type: "text", order: 2, isPublished: true, estimatedMinutes: 15 },
-        { id: 3, moduleId: 1, title: "First Hands-On Exercise", type: "code", order: 3, isPublished: true, estimatedMinutes: 20 },
-      ]
-    },
-    {
-      id: 2,
-      courseId,
-      title: "Core Fundamentals",
-      description: "Essential concepts and techniques",
-      order: 2,
-      isPublished: true,
-      lessons: [
-        { id: 4, moduleId: 2, title: "Understanding Key Concepts", type: "text", order: 1, isPublished: true, estimatedMinutes: 20 },
-        { id: 5, moduleId: 2, title: "Practical Application Demo", type: "video", order: 2, isPublished: true, estimatedMinutes: 25 },
-        { id: 6, moduleId: 2, title: "Knowledge Check Quiz", type: "quiz", order: 3, isPublished: true, estimatedMinutes: 15 },
-      ]
-    },
-    {
-      id: 3,
-      courseId,
-      title: "Advanced Techniques",
-      description: "Deep dive into advanced topics",
-      order: 3,
-      isPublished: false,
-      lessons: [
-        { id: 7, moduleId: 3, title: "Advanced Patterns & Best Practices", type: "text", order: 1, isPublished: false, estimatedMinutes: 30 },
-        { id: 8, moduleId: 3, title: "Real-World Case Study", type: "video", order: 2, isPublished: false, estimatedMinutes: 35 },
-      ]
-    },
-  ];
-};
 
 export default function CurriculumBuilder() {
   const { id } = useParams<{ id: string }>();
   const [, setLocation] = useLocation();
   const { user, logoutMutation } = useAuth();
   const courseId = Number(id) || 1;
-  const course = mockCourses.find(c => c.id === courseId) || mockCourses[0];
 
-  const [modules, setModules] = useState<Module[]>([]);
-  const [expandedModules, setExpandedModules] = useState<Set<number>>(new Set([1, 2]));
+  const [course, setCourse] = useState<Course | null>(null);
+  const [modules, setModules] = useState<MockModule[]>([]);
+
+  const [expandedModules, setExpandedModules] = useState<Set<number>>(new Set());
   const [showAddModule, setShowAddModule] = useState(false);
   const [showAddLesson, setShowAddLesson] = useState<number | null>(null);
-  const [editingModule, setEditingModule] = useState<Module | null>(null);
-  const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
-  
+  const [editingModule, setEditingModule] = useState<MockModule | null>(null);
+
   const [newModuleTitle, setNewModuleTitle] = useState("");
   const [newModuleDesc, setNewModuleDesc] = useState("");
   const [newLessonTitle, setNewLessonTitle] = useState("");
-  const [newLessonType, setNewLessonType] = useState("text");
+  const [newLessonType, setNewLessonType] = useState<"text" | "video" | "code" | "quiz">("text");
   const [newLessonMinutes, setNewLessonMinutes] = useState(15);
 
-  const [nextModuleId, setNextModuleId] = useState(100);
-  const [nextLessonId, setNextLessonId] = useState(100);
-
+  // Load course and modules from store and subscribe to changes
   useEffect(() => {
-    setModules(generateInitialModules(courseId));
+    const loadData = () => {
+      const courseData = mockStore.getCourseById(courseId);
+      setCourse(courseData || null);
+      const courseModules = mockStore.getModulesForCourse(courseId);
+      setModules(courseModules);
+      if (courseModules.length > 0 && expandedModules.size === 0) {
+        setExpandedModules(new Set(courseModules.slice(0, 2).map(m => m.id)));
+      }
+    };
+
+    loadData();
+    const unsubscribe = mockStore.subscribe(loadData);
+    return unsubscribe;
   }, [courseId]);
 
   const handleLogout = async () => {
@@ -116,48 +64,26 @@ export default function CurriculumBuilder() {
 
   const handleAddModule = () => {
     if (!newModuleTitle.trim()) return;
-    
-    const newModule: Module = {
-      id: nextModuleId,
-      courseId,
+
+    mockStore.addModule(courseId, {
       title: newModuleTitle,
       description: newModuleDesc,
-      order: modules.length + 1,
-      isPublished: false,
-      lessons: []
-    };
-    
-    setModules([...modules, newModule]);
-    setNextModuleId(nextModuleId + 1);
+    });
+
     setNewModuleTitle("");
     setNewModuleDesc("");
     setShowAddModule(false);
-    setExpandedModules(new Set([...Array.from(expandedModules), newModule.id]));
   };
 
   const handleAddLesson = (moduleId: number) => {
     if (!newLessonTitle.trim()) return;
-    
-    const module = modules.find(m => m.id === moduleId);
-    if (!module) return;
 
-    const newLesson: Lesson = {
-      id: nextLessonId,
-      moduleId,
+    mockStore.addLesson(moduleId, {
       title: newLessonTitle,
       type: newLessonType,
-      order: module.lessons.length + 1,
-      isPublished: false,
-      estimatedMinutes: newLessonMinutes
-    };
+      estimatedMinutes: newLessonMinutes,
+    });
 
-    setModules(modules.map(m => 
-      m.id === moduleId 
-        ? { ...m, lessons: [...m.lessons, newLesson] }
-        : m
-    ));
-    
-    setNextLessonId(nextLessonId + 1);
     setNewLessonTitle("");
     setNewLessonType("text");
     setNewLessonMinutes(15);
@@ -166,37 +92,29 @@ export default function CurriculumBuilder() {
 
   const handleDeleteModule = (moduleId: number) => {
     if (confirm("Delete this module and all its lessons?")) {
-      setModules(modules.filter(m => m.id !== moduleId));
+      mockStore.deleteModule(moduleId);
     }
   };
 
   const handleDeleteLesson = (moduleId: number, lessonId: number) => {
     if (confirm("Delete this lesson?")) {
-      setModules(modules.map(m => 
-        m.id === moduleId 
-          ? { ...m, lessons: m.lessons.filter(l => l.id !== lessonId) }
-          : m
-      ));
+      mockStore.deleteLesson(lessonId);
     }
   };
 
   const handleSaveModule = () => {
     if (!editingModule) return;
-    setModules(modules.map(m => m.id === editingModule.id ? editingModule : m));
+
+    mockStore.updateModule(editingModule.id, {
+      title: editingModule.title,
+      description: editingModule.description,
+      isPublished: editingModule.isPublished,
+    });
     setEditingModule(null);
   };
 
-  const handleSaveLesson = () => {
-    if (!editingLesson) return;
-    setModules(modules.map(m => ({
-      ...m,
-      lessons: m.lessons.map(l => l.id === editingLesson.id ? editingLesson : l)
-    })));
-    setEditingLesson(null);
-  };
-
   const totalLessons = modules.reduce((acc, m) => acc + m.lessons.length, 0);
-  const totalDuration = modules.reduce((acc, m) => 
+  const totalDuration = modules.reduce((acc, m) =>
     acc + m.lessons.reduce((a, l) => a + l.estimatedMinutes, 0), 0
   );
 
@@ -213,7 +131,7 @@ export default function CurriculumBuilder() {
                 <span className="text-xs block text-muted-foreground">Admin Portal</span>
               </div>
             </div>
-            
+
             <nav className="flex items-center gap-6">
               <Link href="/admin/dashboard">
                 <span className="text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">Dashboard</span>
@@ -247,7 +165,7 @@ export default function CurriculumBuilder() {
               <span className="hover:underline">Courses</span>
             </Link>
             <span>/</span>
-            <span>{course.title}</span>
+            <span>{course?.title || "Course Not Found"}</span>
             <span>/</span>
             <span className="text-foreground">Curriculum</span>
           </div>
@@ -276,7 +194,7 @@ export default function CurriculumBuilder() {
           {modules.map((module, moduleIndex) => (
             <div key={module.id} className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
               {/* Module Header */}
-              <div 
+              <div
                 className="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/50"
                 onClick={() => toggleModule(module.id)}
               >
@@ -311,7 +229,7 @@ export default function CurriculumBuilder() {
               {expandedModules.has(module.id) && (
                 <div className="border-t border-slate-200 dark:border-slate-700">
                   {module.lessons.map((lesson, lessonIndex) => (
-                    <div 
+                    <div
                       key={lesson.id}
                       className="flex items-center justify-between px-4 py-3 pl-12 hover:bg-slate-50 dark:hover:bg-slate-700/30 border-b border-slate-100 dark:border-slate-700 last:border-0"
                     >
@@ -353,7 +271,7 @@ export default function CurriculumBuilder() {
                         />
                         <select
                           value={newLessonType}
-                          onChange={(e) => setNewLessonType(e.target.value)}
+                          onChange={(e) => setNewLessonType(e.target.value as "text" | "video" | "code" | "quiz")}
                           className="px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg text-sm"
                         >
                           <option value="text">Text</option>

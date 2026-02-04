@@ -12,6 +12,9 @@ import {
 } from "@shared/schema";
 import { eq, and, desc, asc, sql, count, like, or } from "drizzle-orm";
 import { randomBytes } from "crypto";
+import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
+import * as XLSX from "xlsx";
+import mammoth from "mammoth";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -453,6 +456,65 @@ export async function registerRoutes(
     }
   });
 
+  // Admin get all enrollments with pagination
+  app.get("/api/admin/enrollments", requireAdmin, async (req, res) => {
+    try {
+      const { search, status, limit = 50, offset = 0 } = req.query;
+
+      const result = await db.select({
+        enrollment: enrollments,
+        user: users,
+        course: courses,
+      })
+        .from(enrollments)
+        .innerJoin(users, eq(enrollments.userId, users.id))
+        .innerJoin(courses, eq(enrollments.courseId, courses.id))
+        .orderBy(desc(enrollments.enrolledAt))
+        .limit(Number(limit))
+        .offset(Number(offset));
+
+      const [total] = await db.select({ count: count() }).from(enrollments);
+
+      const formattedEnrollments = result.map(r => ({
+        id: r.enrollment.id,
+        userId: r.enrollment.userId,
+        courseId: r.enrollment.courseId,
+        status: r.enrollment.status,
+        progress: r.enrollment.progress || 0,
+        enrolledAt: r.enrollment.enrolledAt,
+        completedAt: r.enrollment.completedAt,
+        user: {
+          id: r.user.id,
+          firstName: r.user.firstName,
+          lastName: r.user.lastName,
+          email: r.user.email,
+        },
+        course: {
+          id: r.course.id,
+          title: r.course.title,
+          specialization: r.course.specialization,
+        },
+      }));
+
+      res.json({ enrollments: formattedEnrollments, total: total.count });
+    } catch (error) {
+      console.error("Get admin enrollments error:", error);
+      res.status(500).json({ error: "Failed to get enrollments" });
+    }
+  });
+
+  // Delete enrollment
+  app.delete("/api/admin/enrollments/:id", requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      await db.delete(enrollments).where(eq(enrollments.id, Number(id)));
+      res.sendStatus(204);
+    } catch (error) {
+      console.error("Delete enrollment error:", error);
+      res.status(500).json({ error: "Failed to delete enrollment" });
+    }
+  });
+
   app.post("/api/admin/enrollments", requireAdmin, async (req, res) => {
     try {
       const { userId, courseId } = req.body;
@@ -504,6 +566,42 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Bulk enrollment error:", error);
       res.status(500).json({ error: "Failed to enroll users" });
+    }
+  });
+
+  // Get enrollment progress for a specific course
+  app.get("/api/enrollments/:courseId/progress", requireAuth, async (req, res) => {
+    try {
+      const { courseId } = req.params;
+      const userId = (req.user as any).id;
+
+      // Get the enrollment
+      const [enrollment] = await db.select().from(enrollments)
+        .where(and(eq(enrollments.userId, userId), eq(enrollments.courseId, Number(courseId))));
+
+      // Get completed lessons for this course
+      const completedLessonProgress = await db.select({
+        lessonId: lessonProgress.lessonId,
+      })
+        .from(lessonProgress)
+        .innerJoin(lessons, eq(lessonProgress.lessonId, lessons.id))
+        .innerJoin(modules, eq(lessons.moduleId, modules.id))
+        .where(and(
+          eq(lessonProgress.userId, userId),
+          eq(modules.courseId, Number(courseId)),
+          eq(lessonProgress.status, "completed")
+        ));
+
+      const completedLessons = completedLessonProgress.map(p => p.lessonId);
+
+      res.json({
+        enrollment,
+        completedLessons,
+        progress: enrollment?.progress || 0,
+      });
+    } catch (error) {
+      console.error("Get enrollment progress error:", error);
+      res.status(500).json({ error: "Failed to get enrollment progress" });
     }
   });
 
@@ -1036,6 +1134,160 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Create announcement error:", error);
       res.status(500).json({ error: "Failed to create announcement" });
+    }
+  });
+
+  // ==================== OBJECT STORAGE ====================
+  registerObjectStorageRoutes(app);
+
+  // ==================== FILE TEMPLATES ====================
+  app.get("/api/templates/quiz-questions.xlsx", (req, res) => {
+    const workbook = XLSX.utils.book_new();
+    const data = [
+      ["Question", "Option A", "Option B", "Option C", "Option D", "Correct Answer", "Points", "Explanation"],
+      ["What is cloud computing?", "Local storage", "On-premise servers", "Internet-based computing services", "Personal computers", "C", "10", "Cloud computing delivers services over the internet"],
+      ["Which is an AWS service?", "Azure Blob", "Google Compute", "EC2", "DigitalOcean", "C", "10", "EC2 (Elastic Compute Cloud) is an AWS service"],
+      ["What does API stand for?", "Application Programming Interface", "Advanced Program Integration", "Automated Process Integration", "Application Process Interface", "A", "5", ""],
+    ];
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+    worksheet["!cols"] = [{ wch: 40 }, { wch: 25 }, { wch: 25 }, { wch: 25 }, { wch: 25 }, { wch: 15 }, { wch: 8 }, { wch: 50 }];
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Quiz Questions");
+    
+    const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    res.setHeader("Content-Disposition", "attachment; filename=quiz-questions-template.xlsx");
+    res.send(buffer);
+  });
+
+  app.get("/api/templates/course-content.docx", async (req, res) => {
+    res.setHeader("Content-Type", "text/plain");
+    res.setHeader("Content-Disposition", "attachment; filename=course-content-template.txt");
+    res.send(`COURSE CONTENT TEMPLATE
+======================
+
+# Module 1: Getting Started
+
+## Lesson 1.1: Introduction
+Welcome to the course! In this lesson, you will learn the fundamentals.
+
+### Key Concepts
+- Concept 1: Explanation here
+- Concept 2: Explanation here
+
+### Practical Exercise
+Complete the following exercise to test your understanding.
+
+---
+
+# Module 2: Core Concepts
+
+## Lesson 2.1: Deep Dive
+This lesson covers advanced topics in detail.
+
+### Learning Objectives
+1. Understand the core principles
+2. Apply concepts in real scenarios
+3. Build practical skills
+
+---
+
+INSTRUCTIONS:
+- Use # for Module titles
+- Use ## for Lesson titles
+- Use ### for subsections
+- Separate modules with ---
+- Images can be embedded (they will be extracted and stored)
+`);
+  });
+
+  // Parse Excel file for quiz questions
+  app.post("/api/admin/parse-quiz-excel", requireInstructor, async (req, res) => {
+    try {
+      const { base64Data } = req.body;
+      if (!base64Data) {
+        return res.status(400).json({ error: "No file data provided" });
+      }
+      
+      const buffer = Buffer.from(base64Data, "base64");
+      const workbook = XLSX.read(buffer, { type: "buffer" });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as string[][];
+      
+      const questions = [];
+      for (let i = 1; i < jsonData.length; i++) {
+        const row = jsonData[i];
+        if (row[0]) {
+          questions.push({
+            question: row[0] || "",
+            options: [row[1] || "", row[2] || "", row[3] || "", row[4] || ""],
+            correctAnswer: (row[5] || "A").toUpperCase().charCodeAt(0) - 65,
+            points: parseInt(row[6] as string) || 10,
+            explanation: row[7] || "",
+          });
+        }
+      }
+      
+      res.json({ questions, totalQuestions: questions.length });
+    } catch (error) {
+      console.error("Parse quiz excel error:", error);
+      res.status(500).json({ error: "Failed to parse Excel file" });
+    }
+  });
+
+  // Parse Word document for course content
+  app.post("/api/admin/parse-word-content", requireInstructor, async (req, res) => {
+    try {
+      const { base64Data } = req.body;
+      if (!base64Data) {
+        return res.status(400).json({ error: "No file data provided" });
+      }
+      
+      const buffer = Buffer.from(base64Data, "base64");
+      const result = await mammoth.convertToHtml({ buffer });
+      const html = result.value;
+      
+      const moduleMatches = html.split(/<h1[^>]*>/i).slice(1);
+      const parsedModules = [];
+      
+      for (const moduleContent of moduleMatches) {
+        const moduleEndIndex = moduleContent.indexOf("</h1>");
+        const moduleTitle = moduleContent.substring(0, moduleEndIndex).replace(/<[^>]*>/g, "").trim();
+        const restContent = moduleContent.substring(moduleEndIndex + 5);
+        
+        const lessonMatches = restContent.split(/<h2[^>]*>/i).slice(1);
+        const parsedLessons = [];
+        
+        for (const lessonContent of lessonMatches) {
+          const lessonEndIndex = lessonContent.indexOf("</h2>");
+          const lessonTitle = lessonContent.substring(0, lessonEndIndex).replace(/<[^>]*>/g, "").trim();
+          const lessonBody = lessonContent.substring(lessonEndIndex + 5);
+          
+          parsedLessons.push({
+            title: lessonTitle,
+            content: lessonBody.trim(),
+            type: "text",
+            estimatedMinutes: Math.max(5, Math.ceil(lessonBody.length / 500)),
+          });
+        }
+        
+        if (moduleTitle) {
+          parsedModules.push({
+            title: moduleTitle,
+            lessons: parsedLessons,
+          });
+        }
+      }
+      
+      res.json({ 
+        modules: parsedModules, 
+        totalModules: parsedModules.length,
+        rawHtml: html,
+        messages: result.messages 
+      });
+    } catch (error) {
+      console.error("Parse word content error:", error);
+      res.status(500).json({ error: "Failed to parse Word document" });
     }
   });
 

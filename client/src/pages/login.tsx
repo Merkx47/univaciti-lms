@@ -306,7 +306,18 @@ export default function Login() {
             </Link>
           </p>
 
-          <p className="mt-8 text-center text-xs text-muted-foreground">
+          {/* Demo Credentials */}
+          <div className="mt-6 p-4 rounded-lg bg-slate-100 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600">
+            <p className="text-xs font-medium text-muted-foreground mb-2">Demo Credentials (Student Login):</p>
+            <div className="space-y-1 text-xs">
+              <p><span className="font-medium">Student:</span> student / student123</p>
+            </div>
+            <p className="text-xs text-muted-foreground mt-3">
+              Admin/Instructor? <Link href="/admin/login" className="font-medium hover:underline" style={{ color: THEME_PRIMARY }}>Login here</Link>
+            </p>
+          </div>
+
+          <p className="mt-6 text-center text-xs text-muted-foreground">
             © 2026 Univaciti. All rights reserved.
           </p>
         </div>
